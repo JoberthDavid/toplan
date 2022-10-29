@@ -1,5 +1,4 @@
 db.sqlite3
-geckodriver.log
 settings.json
 __pycache__
 *.pyc
