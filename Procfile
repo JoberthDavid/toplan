@@ -1,0 +1,1 @@
+web: gunicorn sicro_to_plan.wsgi --log-file -
