@@ -35,7 +35,7 @@ dependencies:
   - tzdata=2022e=h04d1e81_0
   - urllib3=1.26.12=py310h06a4308_0
   - wheel=0.37.1=pyhd3eb1b0_0
-  - xz=5.2.6=h5eee18b_0conda-requirements.txt
+  - xz=5.2.6=h5eee18b_0
   - zlib=1.2.12=h5eee18b_3
   - pip:
     - dj-database-url==1.0.0
