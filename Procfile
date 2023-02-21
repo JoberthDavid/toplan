@@ -1,1 +1,1 @@
-web: gunicorn sicro_to_plan.wsgi --log-file -
+web: gunicorn to_plan.wsgi --log-file -
