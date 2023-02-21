@@ -46,13 +46,13 @@ class UploadSicroTest(TestCase):
 
     def test_upload_app_returns_correct_html(self):
         """Must use home_page.html"""
-        self.assertTemplateUsed(self.response_upload_app, 'upload_app.html')
+        self.assertTemplateUsed(self.response_upload_app, 'upload_file.html')
 
     def test_upload_app_basic_html_contents(self):
         """Must return basic html contents upload_app"""
         html = self.response_upload_app.content.decode('utf8')
         self.assertTrue(html.startswith('<!DOCTYPE html>'))
-        self.assertIn('<title>upload SICRO</title>', html)
+        self.assertIn('<title>Carregar arquivo</title>', html)
         self.assertTrue(html.endswith('</html>'))
 
     def test_can_save_a_POST_request(self):
