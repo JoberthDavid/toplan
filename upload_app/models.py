@@ -85,28 +85,41 @@ class ModelFileCost(models.Model):
 
 
     methodology = models.CharField(
+        verbose_name="Metodologia",
         max_length=2,
         choices=METODOLOGIA,
         default=SICRO,
-    )
-    data_base = models.DateField(auto_now=False, auto_now_add=False)
-    file = models.FileField(upload_to='upload_app/pdf_uploaded/')
+        )
+    data_base = models.DateField(
+        verbose_name="Data-base",
+        auto_now=False, auto_now_add=False
+        )
+    file = models.FileField(
+        verbose_name="Arquivo PDF",
+        upload_to='upload_app/pdf_uploaded/'
+        )
     uf = models.CharField(
+        verbose_name="UF",
         max_length=2,
         choices=UF,
         default=GOIAS,        
-    )
+        )
     type_system = models.CharField(
+        verbose_name="Tipo de sistema",
         max_length=2,
         choices=METODOLOGIA,
         default=SICRO,
-    )
+        )
     type_file = models.CharField(
+        verbose_name="Tipo de arquivo",
         max_length=2,
         choices=ARQUIVO,
         default=ANALITICO,
-    )
+        )
 
+
+    class Meta:
+        verbose_name="Arquivo de custo"
 
     def __str__ (self):
         return str(self.file)

@@ -5,4 +5,4 @@ class FormFileCost(ModelForm):
 
     class Meta:
         model = ModelFileCost
-        fields = [ 'methodology', 'data_base', 'file', 'uf', 'type_system', 'type_file' ]
+        fields = '__all__'

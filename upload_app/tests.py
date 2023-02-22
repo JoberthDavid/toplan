@@ -28,11 +28,11 @@ class HomePageTest(TestCase):
         """Must return basic html contents home_page"""
         html = self.response_home_page.content.decode('utf8')
         self.assertTrue(html.startswith('<!DOCTYPE html>'))
-        self.assertIn('<title>Data-base sistema de custos</title>', html)
+        self.assertIn('<title>API de custos</title>', html)
         self.assertTrue(html.endswith('</html>'))
 
     
-class UploadSicroTest(TestCase):
+class UploadAppTest(TestCase):
 
     def setUp(self):
         """Must setUp response_upload_app"""
@@ -46,7 +46,7 @@ class UploadSicroTest(TestCase):
 
     def test_upload_app_returns_correct_html(self):
         """Must use home_page.html"""
-        self.assertTemplateUsed(self.response_upload_app, 'upload_file.html')
+        self.assertTemplateUsed(self.response_upload_app, 'upload_app.html')
 
     def test_upload_app_basic_html_contents(self):
         """Must return basic html contents upload_app"""

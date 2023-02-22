@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <title>Carregar arquivo</title>
+    </head>
+    
+    <body>
+        <div>
+            <h1>Carregar arquivo</h1>
+        </div>
+
+        <div>
+            <form id="id_formfilecost" method="POST">
+                {% for field in form.fields %}
+                    <option value="{{ field }}">{{ field }}</option>
+                        <select>
+                            {% for value, label in form.fields.field.choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                {% endfor %}
+            </form>
+        </div>
+
+    </body>
+</html>
