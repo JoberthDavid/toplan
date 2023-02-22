@@ -11,16 +11,12 @@
         </div>
 
         <div>
-            <form id="id_formfilecost" method="POST">
-                {% for field in form.fields %}
-                    <option value="{{ field }}">{{ field }}</option>
-                        <select>
-                            {% for value, label in form.fields.field.choices %}
-                                <option value="{{ value }}">{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                {% endfor %}
+            <form enctype="multipart/form-data" id="id_formfilecost" action="/upload_app/" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Salvar</button>
             </form>
+
         </div>
 
     </body>

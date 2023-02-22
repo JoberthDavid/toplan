@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .forms import FormFileCost
+from django.core.files.storage import FileSystemStorage
 
 
 def home_page(request):
@@ -11,7 +12,7 @@ def upload_app(request):
         form = FormFileCost(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('success/url/')
+            return HttpResponseRedirect('./')
     else:
-        form = FormFileCost(request.GET)
-        return render(request, 'upload_app.html', {'form': form})
+        form = FormFileCost()
+    return render(request, 'upload_app.html', {'form': form})
