@@ -11,6 +11,8 @@ class ModelFileCost(models.Model):
     EQUIPAMENTO = 'EQ'
     MAODEOBRA = 'MO'
     MATERIAL = 'MA'
+    ONERADO = 'ON'
+    DESONERADO = 'DS'
 
     ACRE = 'AC'
     ALAGOAS = 'AL'
@@ -83,6 +85,11 @@ class ModelFileCost(models.Model):
         (SINAPI, 'SINAPI'),
     ]
 
+    TIPO_SISTEMA=[
+        (ONERADO, 'ONERADO'),
+        (DESONERADO, 'DESONERADO'),
+    ]
+
 
     methodology = models.CharField(
         verbose_name="Metodologia",
@@ -107,8 +114,8 @@ class ModelFileCost(models.Model):
     type_system = models.CharField(
         verbose_name="Tipo de sistema",
         max_length=2,
-        choices=METODOLOGIA,
-        default=SICRO,
+        choices=TIPO_SISTEMA,
+        default=ONERADO,
         )
     type_file = models.CharField(
         verbose_name="Tipo de arquivo",
@@ -123,3 +130,6 @@ class ModelFileCost(models.Model):
 
     def __str__ (self):
         return str(self.file)
+
+    def get_absolute_url(self):
+        return '/upload_app/%i/' % self.id
