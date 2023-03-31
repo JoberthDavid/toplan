@@ -46,43 +46,32 @@ class UploadAppTest(TestCase):
         self.assertEqual(200, self.response_upload_app.status_code)
 
     def test_upload_app_returns_correct_html(self):
-        """Must use home_page.html"""
+        """Must use upload_app.html"""
         self.assertTemplateUsed(self.response_upload_app, 'upload_app.html')
 
     def test_upload_app_basic_html_contents(self):
-        """Must return basic html contents upload_app"""
+        """Must return basic html contents in form from upload_app"""
         html = self.response_upload_app.content.decode('utf8')
         self.assertTrue(html.startswith('<!DOCTYPE html>'))
         self.assertIn('enctype="multipart/form-data', html)
         self.assertIn('<title>Carregar arquivo</title>', html)
+        self.assertIn('enctype="multipart/form-data"', html)
         self.assertTrue(html.endswith('</html>'))
 
     def test_can_save_a_POST_request(self):
+        """Must return POST request in form from upload_app"""
         response = self.client.post('/upload_app/', data={})
     
-class ModelFileCostTest(TestCase):
-
-    @classmethod
-    def setUpTestData(cls) -> None:
-        ModelFileCost.objects.create(data_base='2014-04-01', file='./DF 04-2021 Relatório Analítico de ComposiçΣes de Custos.pdf')
-    
-    def test_get_absolute_url(self):
-        file = ModelFileCost.objects.get(id=1)
-        self.assertEqual(file.get_absolute_url(), '/upload_app/1/')
-
-    def test_methodology_label(self):
-        file = ModelFileCost.objects.get(id=1)
-        field_label = file._meta.get_field('methodology').verbose_name
-        self.assertEqual(field_label, 'Metodologia')
 
 class FormFileCostTest(TestCase):
 
     @classmethod
     def setUpTestData(cls) -> None:
+        """Must setUp ModelFileCost"""
         ModelFileCost.objects.create(data_base='2014-04-01', file='./DF 04-2021 Relatório Analítico de ComposiçΣes de Custos.pdf')
     
-
     def test_valid_form(self):
+        """Must return valid form"""
         file = ModelFileCost.objects.get(id=1)
         data = {'methodology':file.methodology,
                 'data_base': file.data_base,
@@ -95,9 +84,59 @@ class FormFileCostTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_form(self):
+        """Must return invalid form"""
         file = ModelFileCost.objects.create(data_base='2014-04-01', file='')
         data = {'data_base': file.data_base,
                 'file': file.file,
                 }
         form = FormFileCost(data=data)
         self.assertFalse(form.is_valid())
+
+
+class ModelFileCostTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls) -> None:
+        """Must setUp response_upload_app"""
+        ModelFileCost.objects.create(data_base='2014-04-01', file='./DF 04-2021 Relatório Analítico de ComposiçΣes de Custos.pdf')
+    
+    def test_get_absolute_url(self):
+        """Must return absolute url by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        self.assertEqual(file.get_absolute_url(), '/upload_app/1/')
+
+    def test_methodology_label(self):
+        """Must return correct methodology field by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        field_label = file._meta.get_field('methodology').verbose_name
+        self.assertEqual(field_label, 'Metodologia')
+
+    def test_data_base_label(self):
+        """Must return correct data_base field by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        field_label = file._meta.get_field('data_base').verbose_name
+        self.assertEqual(field_label, 'Data-base')
+
+    def test_file_label(self):
+        """Must return correct file field by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        field_label = file._meta.get_field('file').verbose_name
+        self.assertEqual(field_label, 'Arquivo PDF')
+
+    def test_uf_label(self):
+        """Must return correct uf field by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        field_label = file._meta.get_field('uf').verbose_name
+        self.assertEqual(field_label, 'UF')
+
+    def test_type_system_label(self):
+        """Must return correct type_system field by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        field_label = file._meta.get_field('type_system').verbose_name
+        self.assertEqual(field_label, 'Tipo de sistema')
+
+    def test_type_file_label(self):
+        """Must return correct type_file field by ModelFileCost"""
+        file = ModelFileCost.objects.get(id=1)
+        field_label = file._meta.get_field('type_file').verbose_name
+        self.assertEqual(field_label, 'Tipo de arquivo')

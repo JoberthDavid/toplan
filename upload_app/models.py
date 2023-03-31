@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import FileExtensionValidator
 
 
 class ModelFileCost(models.Model):
@@ -103,7 +103,8 @@ class ModelFileCost(models.Model):
         )
     file = models.FileField(
         verbose_name="Arquivo PDF",
-        upload_to='upload_app/pdf_uploaded/'
+        upload_to='upload_app/pdf_uploaded/',
+        validators=[FileExtensionValidator(['pdf'])]
         )
     uf = models.CharField(
         verbose_name="UF",
@@ -123,13 +124,17 @@ class ModelFileCost(models.Model):
         choices=ARQUIVO,
         default=ANALITICO,
         )
+    status = models.BooleanField(
+        verbose_name="Arquivo processado",
+        default=False,
+    )
 
 
     class Meta:
         verbose_name="Arquivo de custo"
 
     def __str__ (self):
-        return str(self.file)
+        return str("".join([self.methodology," ",str(self.data_base), " - ", self.type_system, " - ", self.type_file]))
 
     def get_absolute_url(self):
         return '/upload_app/%i/' % self.id
