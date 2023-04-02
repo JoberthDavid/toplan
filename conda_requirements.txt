@@ -3,8 +3,8 @@ _openmp_mutex=5.1=1_gnu
 asgiref=3.5.2=py310h06a4308_0
 brotlipy=0.7.0=py310h7f8727e_1002
 bzip2=1.0.8=h7b6447c_0
-ca-certificates=2022.07.19=h06a4308_0
-certifi=2022.9.24=py310h06a4308_0
+ca-certificates=2023.01.10=h06a4308_0
+certifi=2022.12.7=py310h06a4308_0
 cffi=1.15.1=py310h74dc2b5_0
 cryptography=37.0.1=py310h9ce1e76_0
 django=4.1=py310h06a4308_0
@@ -13,13 +13,15 @@ ld_impl_linux-64=2.38=h1181459_1
 libffi=3.3=he6710b0_2
 libgcc-ng=11.2.0=h1234567_1
 libgomp=11.2.0=h1234567_1
+libpq=12.9=h16c4e8d_3
 libstdcxx-ng=11.2.0=h1234567_1
 libuuid=1.0.3=h7f8727e_2
 ncurses=6.3=h5eee18b_3
-openssl=1.1.1q=h7f8727e_0
+openssl=1.1.1s=h7f8727e_0
 pip=22.2.2=py310h06a4308_0
 pycparser=2.21=pyhd3eb1b0_0
 pyopenssl=22.0.0=pyhd3eb1b0_0
+psycopg2=2.9.3=py310h37d81fd_0
 pysocks=1.7.1=py310h06a4308_0
 python=3.10.6=haa1d7c7_0
 readline=8.1.2=h7f8727e_1
