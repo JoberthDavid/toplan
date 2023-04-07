@@ -1,4 +1,4 @@
-# import pdftotext
+import pdftotext
 from upload_app.models import ModelFileCost
 
 
@@ -10,11 +10,11 @@ def processing_file(modeladmin, request, queryset):
             path = file_in_field.file
 
             with path.open(mode="rb") as f:
-                # pdf = pdftotext.PDF(f)
-                # num_pages = len(pdf)
+                pdf = pdftotext.PDF(f)
+                num_pages = len(pdf)
                 
-                # print(type(pdf))
-                # print(num_pages)
+                print(type(pdf))
+                print(num_pages)
                 print("OK")
         else:
             print("*** Arquivo errado ***")
