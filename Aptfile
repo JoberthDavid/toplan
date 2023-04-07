@@ -1,2 +1,2 @@
 build-essential libpoppler-cpp-dev pkg-config python3-dev
-libpng12.so.0
+dpkg -i libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
