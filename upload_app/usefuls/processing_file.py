@@ -12,7 +12,7 @@ def processing_file(modeladmin, request, queryset):
             with path.open(mode="rb") as f:
                 pdf = pdftotext.PDF(f)
                 num_pages = len(pdf)
-                # print(num_pages)
+                print(num_pages)
         else:
             pass
 
