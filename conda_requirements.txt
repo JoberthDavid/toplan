@@ -38,7 +38,6 @@ ncurses=6.3=h5eee18b_3
 openjpeg=2.4.0=hf7af979_0
 openssl=1.1.1t=h7f8727e_0
 pcre=8.45=h9c3ff4c_0
-pdftotext=2.2.2=py310h0dde6d5_0
 pip=22.2.2=py310h06a4308_0
 pixman=0.38.0=h516909a_1003
 poppler=21.11.0=h9f6c795_0
