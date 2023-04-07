@@ -1,3 +1,1 @@
-build-essential libpoppler-cpp-dev pkg-config python3-dev
-poppler-utils
-libpoppler-cpp-dev
+sudo apt install build-essential libpoppler-cpp-dev pkg-config python3-dev
