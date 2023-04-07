@@ -13,10 +13,7 @@ def processing_file(modeladmin, request, queryset):
                 pdf = pdftotext.PDF(f)
                 num_pages = len(pdf)
                 
-                print(type(pdf))
-                print(num_pages)
-                print("OK")
         else:
-            print("*** Arquivo errado ***")
+            pass
 
 processing_file.short_description = 'Processar arquivo'
