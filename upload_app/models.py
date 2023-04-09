@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from s3direct.fields import S3DirectField
 
 
 class ModelFileCost(models.Model):
@@ -101,9 +102,9 @@ class ModelFileCost(models.Model):
         verbose_name="Data-base",
         auto_now=False, auto_now_add=False
         )
-    file = models.FileField(
+    file = S3DirectField(
         verbose_name="Arquivo PDF",
-        upload_to='upload_app/pdf_uploaded/',
+        dest='upload_app/pdf_uploaded/',
         validators=[FileExtensionValidator(['pdf'])]
         )
     uf = models.CharField(
