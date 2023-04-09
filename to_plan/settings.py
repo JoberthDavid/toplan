@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'upload_app',
-    's3direct',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -133,10 +132,10 @@ AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'toplan'
 AWS_S3_REGION_NAME = 'sa-east-1'
-AWS_S3_ENDPOINT_URL = 'https://s3.sa-east-1.amazonaws.com'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 S3DIRECT_DESTINATIONS = {
     'primary_destination': {
-        'key': 'uploads/',
+        'key': 'pdf_uploaded/',
     },
 }

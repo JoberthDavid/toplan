@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from upload_app import views
 
 
@@ -22,6 +22,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_page, name='home_page'),
     path('upload_app/', views.upload_app, name='upload_app'),
-    path('', include('django_drive_app.urls')),
-    path('s3direct/', include('s3direct.urls')),
 ]
