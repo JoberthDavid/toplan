@@ -133,8 +133,11 @@ class ModelFileCost(models.Model):
     class Meta:
         verbose_name="Arquivo de custo"
 
-    def __str__ (self):
+    def __str__(self):
         return str("".join([self.methodology," ",str(self.data_base), " - ", self.type_system, " - ", self.type_file]))
+    
+    def _data_base(self):
+        return self.data_base.__format__("%m/%Y")
 
     def get_absolute_url(self):
         return '/upload_app/%i/' % self.id
