@@ -21,25 +21,31 @@ class ModelFileCostAdmin(admin.ModelAdmin):
         return queryset.filter(status=False).first()
 
     def extract_text_from_pdf_file(self, selected_object: ModelFileCost) -> None:
-        text_from_pdf = FileProcessor( selected_object )
+        FileProcessor( selected_object )
 
     def update_selected_object(self, request: HttpRequest, selected_object: ModelFileCost) -> None:
         selected_object.status=True
         selected_object.save()
-
-        if selected_object != None and selected_object.status==True:
-            self.message_about_file_processing( request )
             
-    def message_about_file_processing( self, request: HttpRequest ) -> None:
+    def success_message_about_file_processing( self, request: HttpRequest, queryset: QuerySet) -> None:
         self.message_user( 
             request, 
             ngettext(
                 "O arquivo selecionado foi processado.",
-                "Os arquivos selecionados foram processados.", 
-                1,
+                "Apenas um arquivo foi processado de todos os selecionados.",
+                len(queryset),
                 ),
                 messages.SUCCESS )
 
+    def warning_message_about_file_processing( self, request: HttpRequest, queryset: QuerySet) -> None:
+        self.message_user( 
+            request, 
+            ngettext(
+                "O arquivo selecionado não foi processado.",
+                "Os arquivos selecionados não foram processados.", 
+                len(queryset),
+                ),
+                messages.WARNING )
 
     @admin.action(description='Processar arquivo')
     def process_file(self, request: HttpRequest, queryset: QuerySet) -> None:
@@ -49,9 +55,11 @@ class ModelFileCostAdmin(admin.ModelAdmin):
             self.extract_text_from_pdf_file( selected_object )
 
             self.update_selected_object( request, selected_object )
+            
+            self.success_message_about_file_processing( request, queryset )
 
         except:
-            pass
-
+            self.warning_message_about_file_processing( request, queryset )
+            
 
 admin.site.register(ModelFileCost, ModelFileCostAdmin)
