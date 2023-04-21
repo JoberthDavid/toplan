@@ -11,19 +11,19 @@ class ModelFileCostAdmin(admin.ModelAdmin):
     list_display = [ '_data_base', str, 'status']
     order_by = 'data_base'
     date_hierarchy = 'data_base'
-    actions = ['processing_file',]
+    actions = ['process_file',]
 
-    def selecting_object(self, queryset):
+    def select_object(self, queryset):
         return queryset.filter(status=False).first()
 
-    def extracting_text_from_pdf_file(self, selected_object: ModelFileCost):
+    def extract_text_from_pdf_file(self, selected_object: ModelFileCost):
         with selected_object.file.open(mode="rb") as f:
             pdf_content = PyPDF2.PdfReader(f)
 
             for page in pdf_content.pages:
                 print(page.extract_text())
 
-    def updating_selected_object(self, request, selected_object: ModelFileCost):
+    def update_selected_object(self, request, selected_object: ModelFileCost):
         selected_object.status=True
         selected_object.save()
 
@@ -42,13 +42,13 @@ class ModelFileCostAdmin(admin.ModelAdmin):
 
 
     @admin.action(description='Processar arquivo')
-    def processing_file(self, request, queryset):
+    def process_file(self, request, queryset):
         try:
-            selected_object = self.selecting_object( queryset )
+            selected_object = self.select_object( queryset )
         
-            self.extracting_text_from_pdf_file( selected_object )
+            self.extract_text_from_pdf_file( selected_object )
 
-            self.updating_selected_object( request, selected_object )
+            self.update_selected_object( request, selected_object )
 
         except:
             pass
