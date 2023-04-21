@@ -2,6 +2,7 @@ import PyPDF2
 
 from upload_app.models import ModelFileCost
 
+from upload_app.usefuls.choices import ANALITICO, SINTETICO, EQUIPAMENTO, MAODEOBRA, MATERIAL
 
 class FileProcessor:
         
@@ -14,10 +15,19 @@ class FileProcessor:
         with self.selected_object.file.open(mode="rb") as openned_file:
             self.pdf_content = PyPDF2.PdfReader(openned_file)
 
-    def extract_text_by_pdf_file(self):
-        if self.selected_object.type_file == 'AN':
+    def switch_type_file(self, case):
+        if case == ANALITICO:
             print(self.pdf_content.pages[4501].extract_text())
             # print(type(pdf_content.pages[4501].extract_text()))
-        else:
+        elif case == SINTETICO:
+            print('Sintético')
+        elif case == EQUIPAMENTO:
             for page in self.pdf_content.pages:
                 print(page.extract_text())
+        elif case == MAODEOBRA:
+            print('Mão de obra')   
+        elif case == MATERIAL:
+            print('Material')  
+
+    def extract_text_by_pdf_file(self):
+        self.switch_type_file( self.selected_object.type_file )

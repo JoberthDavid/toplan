@@ -12,7 +12,7 @@ from upload_app.usefuls.processing_file import FileProcessor
 
 
 class ModelFileCostAdmin(admin.ModelAdmin):
-    list_display = [ '_data_base', str, 'status']
+    list_display = [ str, 'status']
     order_by = 'data_base'
     date_hierarchy = 'data_base'
     actions = ['process_file',]
