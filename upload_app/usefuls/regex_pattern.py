@@ -1,23 +1,45 @@
 import re
 from typing import Match
 
+from upload_app.usefuls.pattern import *
 
-class HeaderCompositionRegex:
 
-    def __init__( self, evaluated: str ) -> None:
-        first_row_of_header = r'(        Valores em reais (R$)Custo Unitário de Referência Produção da equipe)'
-        second_row_of_header = r'(.*) (Amazonas|Alagoas|Amapá|Bahia|Ceará|Distrito Federal|Espírito Santo|Goiás|Maranhão|Mato Grosso|Mato Grosso do Sul|Minas Gerais|Pará|Paraíba|Paraná|Pernambuco|Piauí|Rio de Janeiro|Rio Grande do Norte|Rio Grande do Sul|Rondônia|Roraima|Santa Catarina|São Paulo|Sergipe|Tocantins) (SISTEMA DE CUSTOS REFERENCIAIS DE OBRAS - SICRO) ?(FIC) ?(?P<fic_regex>\d\,\d\d\d\d\d) (CGCIT DNIT)'
-        third_row_of_header = r'(?P<data_base_regex>Janeiro|Fevereiro|Março|Abril|Maio|Junho|Julho|Agosto|Setembro|Outubro|Novembro|Dezembro\/\d{4}) (?P<production_regex>\d{1,3}(\.\d{3})*,\d{5}) (?P<unit_regex>.+)'
-        fourth_row_of_header = r'(\d{7})'
-        header_regex_list = [first_row_of_header, second_row_of_header, third_row_of_header, fourth_row_of_header]
-        self.header = self.get_header_regex( evaluated, header_regex_list )
+class CompositionRegex:
 
-    def get_header_regex( self, evaluated: str, header_regex_list: list ):
-        chosen_regex = {}
-        for header_regex_option in header_regex_list:
-            if ( re.match( header_regex_option, evaluated ) is not None ):
-                chosen_regex = re.match( header_regex_option, evaluated )
+    def __init__( self ) -> None:
+        self.first_row_pattern = FIRST_ROW_PATTERN
+
+    def get_regex( self, pattern: str, evaluated: str, group: str ) -> str|None:
+        if ( re.match( pattern, evaluated ) is not None ):
+            chosen_regex = re.match( pattern, evaluated ).group( group )
+        else:
+            chosen_regex = None
         return chosen_regex
+
+    def switch_regex(self, case: str, evaluated: str ) -> str:
+        if case == FIC_REGEX:
+            return self.get_regex( SECOND_ROW_PATTERN, evaluated, case )
+        elif case == DATA_BASE_REGEX:
+            return self.get_regex( THIRD_ROW_PATTERN, evaluated, case )
+        elif case == PRODUCTION_REGEX:
+            return self.get_regex( THIRD_ROW_PATTERN, evaluated, case )
+        elif case == UNIT_REGEX:
+            return self.get_regex( THIRD_ROW_PATTERN, evaluated, case )
+        elif case == COMPOSITION_CODE_REGEX:
+            return self.get_regex( FOURTH_ROW_PATTERN, evaluated, case )
+        elif case == EQUIPAMENT_CODE_REGEX:
+            return self.get_regex( EQUIPAMENT_PATTERN, evaluated, case )
+        elif case == EQUIPAMENT_QUANT_REGEX:
+            return self.get_regex( EQUIPAMENT_PATTERN, evaluated, case )
+        elif case == EQUIPAMENT_UTIL_REGEX:
+            return self.get_regex( EQUIPAMENT_PATTERN, evaluated, case )
+        elif case == WORKMANSHIP_CODE_REGEX:
+            return self.get_regex( WORKMANSHIP_PATTERN, evaluated, case )
+        elif case == WORKMANSHIP_QUANT_REGEX:
+            return self.get_regex( WORKMANSHIP_PATTERN, evaluated, case )
+        elif case == WORKMANSHIP_BREAK_REGEX:
+            return self.get_regex( WORKMANSHIP_BREAK_PATTERN, evaluated, case )
+
 
 
 # class BodyCompositionRegex:
