@@ -75,6 +75,7 @@ class CompositionModel:
         self.list_of_auxiliaries_activities = []
         self.list_of_fixed_time =[]
         self.list_of_momentum_of_transport = []
+        self.stop_flag = False
 
     def get_basic_data(self):
         return str(self.composition_code) + str(self.fic) + str(self.data_base) + str(self.production) + str(self.unit)

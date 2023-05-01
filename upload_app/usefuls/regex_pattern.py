@@ -27,18 +27,24 @@ class CompositionRegex:
             return self.get_regex( THIRD_ROW_PATTERN, evaluated, case )
         elif case == COMPOSITION_CODE_REGEX:
             return self.get_regex( FOURTH_ROW_PATTERN, evaluated, case )
-        elif case == EQUIPAMENT_CODE_REGEX:
-            return self.get_regex( EQUIPAMENT_PATTERN, evaluated, case )
-        elif case == EQUIPAMENT_QUANT_REGEX:
-            return self.get_regex( EQUIPAMENT_PATTERN, evaluated, case )
-        elif case == EQUIPAMENT_UTIL_REGEX:
-            return self.get_regex( EQUIPAMENT_PATTERN, evaluated, case )
+        elif case == EQUIPEMENT_CODE_REGEX:
+            return self.get_regex( EQUIPEMENT_PATTERN, evaluated, case )
+        elif case == EQUIPEMENT_QUANT_REGEX:
+            return self.get_regex( EQUIPEMENT_PATTERN, evaluated, case )
+        elif case == EQUIPEMENT_UTIL_REGEX:
+            return self.get_regex( EQUIPEMENT_PATTERN, evaluated, case )
         elif case == WORKMANSHIP_CODE_REGEX:
             return self.get_regex( WORKMANSHIP_PATTERN, evaluated, case )
         elif case == WORKMANSHIP_QUANT_REGEX:
             return self.get_regex( WORKMANSHIP_PATTERN, evaluated, case )
-        elif case == WORKMANSHIP_BREAK_REGEX:
-            return self.get_regex( WORKMANSHIP_BREAK_PATTERN, evaluated, case )
+        elif case == MATERIAL_CODE_REGEX or case == MATERIAL_QUANT_REGEX:
+            return self.get_regex( MATERIAL_PATTERN, evaluated, case )
+        elif case == FIXED_CODE_REGEX or case == FIXED_MATERIAL_CODE_REGEX or case == FIXED_MATERIAL_QUANT_REGEX:
+            return self.get_regex( FIXED_TIME_PATTERN, evaluated, case )
+        elif case == BREAK_REGEX:
+            return self.get_regex( BREAK_PATTERN, evaluated, case )
+        elif case == LAST_REGEX:
+            return self.get_regex( LAST_PATTERN, evaluated, case )
 
 
 
@@ -50,7 +56,7 @@ class CompositionRegex:
 #         self.regex_fic = ''
 #         self.regex_producao = ''
 #         self.regex_codigo = ''
-#         self.regex_equipamento = ''
+#         self.regex_EQUIPEMENTo = ''
 #         self.regex_mao_de_obra = ''
 #         self.regex_tempo_fixo = ''
 #         self.regex_transporte_rodoviario = ''
@@ -79,8 +85,8 @@ class CompositionRegex:
 #     def obter_pattern_codigo( self ) -> str:
 #         return r'(?P<re_codigo>\d{7}) (.+) (Valores em reais \(R\$\))'
 
-#     def obter_pattern_equipamento( self ) -> str:
-#         return r'(\s*) (?P<re_equipamento>[EA]\d{4}) (.+) (?P<re_quantidade>\d+\,\d{5}) (?P<re_utilizacao>\d+\,\d{2})'
+#     def obter_pattern_EQUIPEMENTo( self ) -> str:
+#         return r'(\s*) (?P<re_EQUIPEMENTo>[EA]\d{4}) (.+) (?P<re_quantidade>\d+\,\d{5}) (?P<re_utilizacao>\d+\,\d{2})'
 
 #     def obter_pattern_mao_de_obra( self ) -> str:
 #         return r'(\s*) (?P<re_mao_de_obra>[P]\d{4}) (.+) (?P<re_quantidade>\d+\,\d{5})'
@@ -116,9 +122,9 @@ class CompositionRegex:
 #         avaliado = self.linhas[ range + 1]
 #         return re.match( self.obter_pattern_codigo(), avaliado )
 
-#     def obter_regex_equipamento( self, range ) -> Match:
+#     def obter_regex_EQUIPEMENTo( self, range ) -> Match:
 #         avaliado = self.linhas[ range ]
-#         return re.match( self.obter_pattern_equipamento(), avaliado )
+#         return re.match( self.obter_pattern_EQUIPEMENTo(), avaliado )
 
 #     def obter_regex_mao_de_obra( self, range ) -> Match:
 #         avaliado = self.linhas[ range ]
