@@ -69,13 +69,27 @@ class CompositionModel:
         self.production = None
         self.unit = None
         self.composition_code = None
-        self.list_of_equipement = []
-        self.list_of_workmanship = []
-        self.list_of_materials = []
+        self.list_of_equipement_codes = []
+        self.list_of_equipement_quantities = []
+        self.list_of_equipement_utilities = []
+        self.list_of_workmanship_codes = []
+        self.list_of_workmanship_quantities = []
+        self.list_of_material_codes = []
+        self.list_of_material_quantities = []
+        self.list_of_fixed_codes = []
+        self.list_of_fixed_material_codes = []
+        self.list_of_fixed_material_quantities = []
+
         self.list_of_auxiliaries_activities = []
-        self.list_of_fixed_time =[]
-        self.list_of_momentum_of_transport = []
+
+        self.list_of_transp_pv_codes = []
+        self.list_of_transp_ln_codes = []
+        self.list_of_transp_rp_codes = []
+        self.list_of_transp_material_codes = []
+        self.list_of_transp_material_quantities = []
+        
         self.stop_flag = False
+
 
     def get_basic_data(self):
         return str(self.composition_code) + str(self.fic) + str(self.data_base) + str(self.production) + str(self.unit)
