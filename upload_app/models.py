@@ -80,7 +80,8 @@ class CompositionModel:
         self.list_of_fixed_material_codes = []
         self.list_of_fixed_material_quantities = []
 
-        self.list_of_auxiliaries_activities = []
+        self.list_of_auxiliaries_codes = []
+        self.list_of_auxiliaries_quantities = []
 
         self.list_of_transp_pv_codes = []
         self.list_of_transp_ln_codes = []

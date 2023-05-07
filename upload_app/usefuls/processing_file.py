@@ -13,25 +13,24 @@ class FileProcessor:
         self.access_file()
         self.extract_text_from_pdf_file()
 
-    def access_file(self):
+    def access_file(self) -> None:
         with self.selected_object.file.open(mode="rb") as openned_file:
             self.pdf_content = PyPDF2.PdfReader(openned_file)
 
-    def get_list_of_inputs_of_composition(self):
-        return self.pdf_content.pages[4400].extract_text().split('\n')
+    def get_list_of_inputs_of_composition(self, page_selected: int) -> list:
+        return self.pdf_content.pages[ page_selected ].extract_text().split('\n')
 
     def switch_type_file(self, case):
         if case == ANALITICO:
             regex = CompositionRegex()
             composition_object = CompositionModel()
-            list_of_inputs_of_composition = self.get_list_of_inputs_of_composition()
+            list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( 4400 )
             i = 1 #jump first row of composition
 
 
-            while composition_object.stop_flag == False:
+            while i < len(list_of_inputs_of_composition):
                 row = list_of_inputs_of_composition[i]
 
-                print( row )
                 if regex.switch_regex( FIC_REGEX, row) != None:
                     composition_object.fic = regex.switch_regex( FIC_REGEX, row)
                 elif regex.switch_regex( DATA_BASE_REGEX, row) != None:
@@ -55,12 +54,7 @@ class FileProcessor:
                 elif regex.switch_regex( MATERIAL_CODE_REGEX, row ) != None:
                     composition_object.list_of_material_codes.append( regex.switch_regex( MATERIAL_CODE_REGEX, row ) )
                     composition_object.list_of_material_quantities.append( regex.switch_regex( MATERIAL_QUANT_REGEX, row ) )
-                # # elif regex.switch_regex( ACTIVITIES_QUANT_REGEX, row ) != None:
-                # #     activity_quant = regex.switch_regex( ACTIVITIES_QUANT_REGEX, row )
-                # # elif regex.switch_regex( ACTIVITIES_CODE_REGEX, row ) != None:
-                # #     activity_code = regex.switch_regex( ACTIVITIES_CODE_REGEX, row )
-                # #     composition_object.list_of_auxiliaries_activities.append( ( activity_code, activity_quant ) )
-                elif regex.switch_regex( FIXED_CODE_REGEX, row ) != None:
+                elif regex.switch_regex( FIXED_UNIT_REGEX, row ) != None:
                     composition_object.list_of_fixed_codes.append( regex.switch_regex( FIXED_CODE_REGEX, row ) )
                     composition_object.list_of_fixed_material_codes.append( regex.switch_regex( FIXED_MATERIAL_CODE_REGEX, row ) )
                     composition_object.list_of_fixed_material_quantities.append( regex.switch_regex( FIXED_MATERIAL_QUANT_REGEX, row ) )
@@ -70,13 +64,18 @@ class FileProcessor:
                     composition_object.list_of_transp_rp_codes.append( regex.switch_regex( TRANSPORTATION_RP_CODE_REGEX, row ) )
                     composition_object.list_of_transp_material_codes.append( regex.switch_regex( TRANSPORTATION_MATERIAL_CODE_REGEX, row ) )
                     composition_object.list_of_transp_material_quantities.append( regex.switch_regex( TRANSPORTATION_MATERIAL_QUANT_REGEX, row ) )
+                elif regex.switch_regex( ACTIVITIES_CODE_REGEX, row ) != None:
+                    composition_object.list_of_auxiliaries_codes.append( regex.switch_regex( ACTIVITIES_CODE_REGEX, row ) )
+                    composition_object.list_of_auxiliaries_quantities.append( regex.switch_regex( ACTIVITIES_QUANT_REGEX, row ) )
+                elif regex.switch_regex( ACTIVITIES_QUANT_REGEX_ALFA, row ) != None:
+                    composition_object.list_of_auxiliaries_quantities.append( regex.switch_regex( ACTIVITIES_QUANT_REGEX_ALFA, row ) )
+                elif regex.switch_regex( ACTIVITIES_CODE_REGEX_BETA, row ) != None:
+                    composition_object.list_of_auxiliaries_codes.append( regex.switch_regex( ACTIVITIES_CODE_REGEX_BETA, row ) )    
                 elif regex.switch_regex( BREAK_REGEX, row ) != None:
                     i = i + 6 #jump costs of composition
                 elif regex.switch_regex( LAST_REGEX, row ) != None:
                     composition_object.stop_flag = True
                 i = i + 1
-
-            # print( list_of_inputs_of_composition )
 
             print( composition_object.composition_code )
             print( composition_object.list_of_equipement_codes )
@@ -86,7 +85,10 @@ class FileProcessor:
             print( composition_object.list_of_workmanship_quantities)
             print( composition_object.list_of_material_codes)
             print( composition_object.list_of_material_quantities)
-            # print( composition_object.list_of_auxiliaries_activities )
+            
+            print( composition_object.list_of_auxiliaries_codes )
+            print( composition_object.list_of_auxiliaries_quantities )
+
             print( composition_object.list_of_fixed_codes )
             print( composition_object.list_of_fixed_material_codes )
             print( composition_object.list_of_fixed_material_quantities )
