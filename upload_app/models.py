@@ -49,7 +49,7 @@ class ModelFileCost(models.Model):
         verbose_name="Arquivo de custo"
 
     def __str__(self):
-        return "".join([self.methodology, " - ",self.uf, " - ", self.parser_data_base_to_string(), " - ", self.type_system, " - ", self.type_file])
+        return " - ".join([self.methodology, self.uf, self.parser_data_base_to_string(), self.type_system, self.type_file])
     
     def format_data_base(self):
         return self.data_base.__format__("%m/%Y")
@@ -61,7 +61,80 @@ class ModelFileCost(models.Model):
         return '/upload_app/%i/' % self.id
     
 
-class CompositionModel:
+class ModelComposition(models.Model):
+
+    composition_code = models.PositiveIntegerField(
+        verbose_name="Código",
+        )
+    fic = models.DecimalField(
+        verbose_name="FIC",
+        max_digits=18,
+        decimal_places=5,
+        default=0.0,
+        )
+    production = models.DecimalField(
+        verbose_name="Produção",
+        max_digits=18,
+        decimal_places=5
+        )
+    file_cost = models.ForeignKey(
+        ModelFileCost,
+        on_delete=models.CASCADE,
+        )
+
+    class Meta:
+        verbose_name="Composição"
+
+    def __str__(self):
+        return str(self.composition_code)
+
+class ModelInput(models.Model):
+
+    main_input_code = models.CharField(
+        verbose_name="Código",
+        max_length=10,
+        )
+    main_input_group = models.CharField(
+        verbose_name="Grupo",
+        max_length=2,
+        choices=INPUT_GROUP,
+        )
+    main_input_quantity = models.DecimalField(
+        verbose_name="Quantidade",
+        max_digits=18,
+        decimal_places=5,
+        )
+    main_input_use = models.DecimalField(
+        verbose_name="Utilização",
+        max_digits=18,
+        decimal_places=5,
+        default=None,
+        null=True,
+        blank=True,
+        )
+    transported_input_code = models.CharField(
+        verbose_name="Código insumo transportado",
+        max_length=10,
+        default=None,
+        null=True,
+        blank=True,
+
+        )
+    related_composition = models.ForeignKey(
+        ModelComposition,
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+        )
+
+    class Meta:
+        verbose_name="Apropriação de composição"
+
+    def __str__(self):
+        return str(self.main_input_code)
+
+class CompositionStamp:
 
     def __init__( self ) -> None:
         self.fic = None
@@ -72,20 +145,15 @@ class CompositionModel:
         self.list_of_equipement_codes = []
         self.list_of_equipement_quantities = []
         self.list_of_equipement_utilities = []
-        self.list_of_workmanship_codes = []
-        self.list_of_workmanship_quantities = []
-        self.list_of_material_codes = []
-        self.list_of_material_quantities = []
+        self.list_of_general_input_codes = []
+        self.list_of_general_input_quantities = []
         self.list_of_fixed_codes = []
         self.list_of_fixed_material_codes = []
         self.list_of_fixed_material_quantities = []
-
-        self.list_of_auxiliaries_codes = []
-        self.list_of_auxiliaries_quantities = []
-
         self.list_of_transp_pv_codes = []
         self.list_of_transp_ln_codes = []
         self.list_of_transp_rp_codes = []
+        self.list_of_transp_fe_codes = []
         self.list_of_transp_material_codes = []
         self.list_of_transp_material_quantities = []
         

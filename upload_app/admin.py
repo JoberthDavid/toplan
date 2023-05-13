@@ -3,7 +3,7 @@ import PyPDF2
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
-from upload_app.models import ModelFileCost
+from upload_app.models import ModelFileCost, ModelComposition, ModelInput
 
 from django.contrib import messages
 from django.utils.translation import ngettext
@@ -62,4 +62,16 @@ class ModelFileCostAdmin(admin.ModelAdmin):
             self.warning_message_about_file_processing( request, queryset )
             
 
+class ModelCompositionAdmin(admin.ModelAdmin):
+
+    order_by = 'file_cost'
+
+
+class ModelInputAdmin(admin.ModelAdmin):
+
+    order_by = 'related_composition'
+
+
 admin.site.register(ModelFileCost, ModelFileCostAdmin)
+admin.site.register(ModelComposition, ModelCompositionAdmin)
+admin.site.register(ModelInput, ModelInputAdmin)

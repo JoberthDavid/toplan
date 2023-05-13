@@ -27,16 +27,12 @@ class CompositionRegex:
             return self.get_regex( EQUIPEMENT_PATTERN_ALFA, evaluated, case )
         elif case == EQUIPEMENT_CODE_REGEX_BETA:
             return self.get_regex( EQUIPEMENT_PATTERN_BETA, evaluated, case )
-        elif case == WORKMANSHIP_CODE_REGEX or case == WORKMANSHIP_QUANT_REGEX:
-            return self.get_regex( WORKMANSHIP_PATTERN, evaluated, case )
-        elif case == MATERIAL_CODE_REGEX or case == MATERIAL_QUANT_REGEX:
-            return self.get_regex( MATERIAL_PATTERN, evaluated, case )
-        elif case == ACTIVITIES_CODE_REGEX:
-            return self.get_regex( ACTIVITIES_PATTERN, evaluated, case )
-        elif case == ACTIVITIES_QUANT_REGEX_ALFA:
-            return self.get_regex( ACTIVITIES_PATTERN_ALFA, evaluated, case )
-        elif case == ACTIVITIES_CODE_REGEX_BETA:
-            return self.get_regex( ACTIVITIES_PATTERN_BETA, evaluated, case )
+        elif case == GENERAL_INPUT_CODE_REGEX or case == GENERAL_INPUT_QUANT_REGEX:
+            return self.get_regex( GENERAL_INPUT_PATTERN, evaluated, case )
+        elif case == GENERAL_INPUT_QUANT_REGEX_ALFA:
+            return self.get_regex( GENERAL_INPUT_PATTERN_ALFA, evaluated, case )
+        elif case == GENERAL_INPUT_CODE_REGEX_BETA:
+            return self.get_regex( GENERAL_INPUT_PATTERN_BETA, evaluated, case )
         elif case == FIXED_UNIT_REGEX or case == FIXED_CODE_REGEX or case == FIXED_MATERIAL_CODE_REGEX or case == FIXED_MATERIAL_QUANT_REGEX:
             return self.get_regex( FIXED_TIME_PATTERN, evaluated, case )
         elif case == TRANSPORTATION_UNIT_REGEX or case == TRANSPORTATION_PV_CODE_REGEX or case == TRANSPORTATION_RP_CODE_REGEX or case == TRANSPORTATION_LN_CODE_REGEX or case == TRANSPORTATION_MATERIAL_CODE_REGEX or case == TRANSPORTATION_MATERIAL_QUANT_REGEX:
