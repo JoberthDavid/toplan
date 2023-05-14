@@ -27,14 +27,15 @@ class FileProcessor:
         if case == ANALITICO:
             regex = CompositionRegex()
 
-            composition_bulk_list = []
+            composition_bulk_create_list = []
+            input_bulk_create_list = []
 
-            for page in range(90):#range( len( self.pdf_content.pages ) ):
+            for page in range(98):#range( len( self.pdf_content.pages ) ):
                 composition_object = CompositionStamp()
                 list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
                 i = 1 #jump first row of composition
 
-                print( page )
+                # print( page )
                 while i < len(list_of_inputs_of_composition):
                     row = list_of_inputs_of_composition[i]
 
@@ -46,11 +47,24 @@ class FileProcessor:
                         composition_object.production = Decimal( prod_str.replace(".","").replace(",",".") )
                         composition_object.unit = regex.switch_regex( UNIT_REGEX, row)
                     elif regex.switch_regex( COMPOSITION_CODE_REGEX, row) != None:
-                        composition_object.composition_code = int( regex.switch_regex( COMPOSITION_CODE_REGEX, row) )
+                        comp_code_int = int( regex.switch_regex( COMPOSITION_CODE_REGEX, row) )
+                        composition_object.composition_code = comp_code_int
                     elif regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
                         composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) )
-                        composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX, row ) )
-                        composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX, row ) )
+                        quantity_dec = Decimal( regex.switch_regex( EQUIPEMENT_QUANT_REGEX, row ).replace(".","").replace(",",".") )
+                        composition_object.list_of_equipement_quantities.append( quantity_dec )
+                        use_dec = Decimal( regex.switch_regex( EQUIPEMENT_UTIL_REGEX, row ).replace(".","").replace(",",".") )
+                        composition_object.list_of_equipement_utilities.append( use_dec )
+                        print( row )
+                        ap_eq = ModelInput(
+                            main_input_code=regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ),
+                            main_input_group=EQUIPAMENTO,
+                            main_input_quantity=quantity_dec,
+                            main_input_use=use_dec,
+                            transported_input_code=None,
+                            related_composition=None,
+                        )
+                        input_bulk_create_list.append(ap_eq)
                     elif regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) != None:
                         composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) )
                         composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ) )
@@ -81,20 +95,25 @@ class FileProcessor:
                         i = i + 6 #jump costs of composition
                     elif regex.switch_regex( LAST_REGEX, row ) != None:
                         composition_object.stop_flag = True
+                    
+
                     i = i + 1
 
                     
-                composition_bulk_list.append(
+                composition_bulk_create_list.append(
                     ModelComposition(
                         composition_code=composition_object.composition_code,
                         fic=composition_object.fic,
                         production=composition_object.production,
                         file_cost=self.selected_object
-                        )
                     )
-            
-            ModelComposition.objects.bulk_create( composition_bulk_list )
+                )
 
+
+            # ModelComposition.objects.bulk_create( composition_bulk_create_list )
+            # print( input_bulk_create_list )
+            a = ModelInput.objects.bulk_create( input_bulk_create_list )
+            print( a )
             # print( composition_object.list_of_equipement_codes )
             # print( composition_object.list_of_equipement_quantities )
             # print( composition_object.list_of_equipement_utilities )
