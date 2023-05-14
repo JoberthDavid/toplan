@@ -47,6 +47,7 @@ class ModelFileCost(models.Model):
 
     class Meta:
         verbose_name="Arquivo de custo"
+        verbose_name_plural="Arquivos de custos"
 
     def __str__(self):
         return " - ".join([self.methodology, self.uf, self.parser_data_base_to_string(), self.type_system, self.type_file])
@@ -80,10 +81,14 @@ class ModelComposition(models.Model):
     file_cost = models.ForeignKey(
         ModelFileCost,
         on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
         )
 
     class Meta:
         verbose_name="Composição"
+        verbose_name_plural="Composições"
 
     def __str__(self):
         return str(self.composition_code)
@@ -130,6 +135,7 @@ class ModelInput(models.Model):
 
     class Meta:
         verbose_name="Apropriação de composição"
+        verbose_name_plural="Apropriações de composições"
 
     def __str__(self):
         return str(self.main_input_code)
@@ -137,7 +143,7 @@ class ModelInput(models.Model):
 class CompositionStamp:
 
     def __init__( self ) -> None:
-        self.fic = None
+        self.fic = 0.00000
         self.data_base = None
         self.production = None
         self.unit = None

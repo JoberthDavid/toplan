@@ -1,6 +1,7 @@
 import PyPDF2
+from decimal import Decimal
 
-from upload_app.models import ModelFileCost, ModelInput, CompositionStamp
+from upload_app.models import ModelFileCost, ModelComposition, ModelInput, CompositionStamp
 from upload_app.usefuls.choices import ANALITICO, SINTETICO, EQUIPAMENTO, MAODEOBRA, MATERIAL
 from upload_app.usefuls.pattern import *
 from upload_app.usefuls.regex_pattern import CompositionRegex
@@ -10,6 +11,7 @@ class FileProcessor:
         
     def __init__(self, selected_object: ModelFileCost) -> None:
         self.selected_object = selected_object
+        # print( "PK de ModelFileCost" + str(self.selected_object.pk) )
         self.access_file()
         self.extract_text_from_pdf_file()
 
@@ -25,75 +27,89 @@ class FileProcessor:
         if case == ANALITICO:
             regex = CompositionRegex()
 
-            # for page in range( len( self.pdf_content.pages ) ):
-            composition_object = CompositionStamp()
-            list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( 6330 )
-            i = 1 #jump first row of composition
+            composition_bulk_list = []
 
-            while i < len(list_of_inputs_of_composition):
-                row = list_of_inputs_of_composition[i]
-                # print( row )
-                if regex.switch_regex( FIC_REGEX, row) != None:
-                    composition_object.fic = regex.switch_regex( FIC_REGEX, row)
-                elif regex.switch_regex( DATA_BASE_REGEX, row) != None:
-                    composition_object.data_base = regex.switch_regex( DATA_BASE_REGEX, row)
-                    composition_object.production = regex.switch_regex( PRODUCTION_REGEX, row)
-                    composition_object.unit = regex.switch_regex( UNIT_REGEX, row)
-                elif regex.switch_regex( COMPOSITION_CODE_REGEX, row) != None:
-                    composition_object.composition_code = regex.switch_regex( COMPOSITION_CODE_REGEX, row)
-                elif regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
-                    composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) )
-                    composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX, row ) )
-                    composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX, row ) )
-                elif regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) != None:
-                    composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) )
-                    composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ) )
-                elif regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) != None:
-                    composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) )
-                elif regex.switch_regex( FIXED_UNIT_REGEX, row ) != None:
-                    composition_object.list_of_fixed_codes.append( regex.switch_regex( FIXED_CODE_REGEX, row ) )
-                    composition_object.list_of_fixed_material_codes.append( regex.switch_regex( FIXED_MATERIAL_CODE_REGEX, row ) )
-                    composition_object.list_of_fixed_material_quantities.append( regex.switch_regex( FIXED_MATERIAL_QUANT_REGEX, row ) )
-                elif regex.switch_regex( TRANSPORTATION_UNIT_REGEX, row ) != None:
-                    composition_object.list_of_transp_pv_codes.append( regex.switch_regex( TRANSPORTATION_PV_CODE_REGEX, row ) )
-                    composition_object.list_of_transp_rp_codes.append( regex.switch_regex( TRANSPORTATION_RP_CODE_REGEX, row ) )
-                    composition_object.list_of_transp_ln_codes.append( regex.switch_regex( TRANSPORTATION_LN_CODE_REGEX, row ) )
-                    composition_object.list_of_transp_material_codes.append( regex.switch_regex( TRANSPORTATION_MATERIAL_CODE_REGEX, row ) )
-                    composition_object.list_of_transp_material_quantities.append( regex.switch_regex( TRANSPORTATION_MATERIAL_QUANT_REGEX, row ) )
-                elif regex.switch_regex( TRANSPORTATION_FE_CODE_REGEX_ALFA, row ) != None:
-                    composition_object.list_of_transp_fe_codes.append( regex.switch_regex( TRANSPORTATION_FE_CODE_REGEX_ALFA, row ) )
-                    composition_object.list_of_transp_material_codes.append( regex.switch_regex( TRANSPORTATION_MATERIAL_CODE_REGEX_ALFA, row ) )
-                    composition_object.list_of_transp_material_quantities.append( regex.switch_regex( TRANSPORTATION_MATERIAL_QUANT_REGEX_ALFA, row ) )    
-                elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX, row ) != None:
-                    composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX, row ) )
-                    composition_object.list_of_general_input_quantities.append( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX, row ) )
-                elif regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) != None:
-                    composition_object.list_of_general_input_quantities.append( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) )
-                elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) != None:
-                    composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) )
-                elif regex.switch_regex( BREAK_REGEX, row ) != None:
-                    i = i + 6 #jump costs of composition
-                elif regex.switch_regex( LAST_REGEX, row ) != None:
-                    composition_object.stop_flag = True
-                i = i + 1
+            for page in range(90):#range( len( self.pdf_content.pages ) ):
+                composition_object = CompositionStamp()
+                list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
+                i = 1 #jump first row of composition
 
-            print( composition_object.composition_code )
+                print( page )
+                while i < len(list_of_inputs_of_composition):
+                    row = list_of_inputs_of_composition[i]
 
-            print( composition_object.list_of_equipement_codes )
-            print( composition_object.list_of_equipement_quantities )
-            print( composition_object.list_of_equipement_utilities )
-            print( composition_object.list_of_general_input_codes)
-            print( composition_object.list_of_general_input_quantities)
+                    if regex.switch_regex( FIC_REGEX, row) != None:
+                        fic_str = regex.switch_regex( FIC_REGEX, row)
+                        composition_object.fic = Decimal( fic_str.replace(".","").replace(",",".") )
+                    elif regex.switch_regex( DATA_BASE_REGEX, row) != None:
+                        prod_str = regex.switch_regex( PRODUCTION_REGEX, row)
+                        composition_object.production = Decimal( prod_str.replace(".","").replace(",",".") )
+                        composition_object.unit = regex.switch_regex( UNIT_REGEX, row)
+                    elif regex.switch_regex( COMPOSITION_CODE_REGEX, row) != None:
+                        composition_object.composition_code = int( regex.switch_regex( COMPOSITION_CODE_REGEX, row) )
+                    elif regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
+                        composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) )
+                        composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX, row ) )
+                        composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX, row ) )
+                    elif regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) != None:
+                        composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) )
+                        composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ) )
+                    elif regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) != None:
+                        composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) )
+                    elif regex.switch_regex( FIXED_UNIT_REGEX, row ) != None:
+                        composition_object.list_of_fixed_codes.append( regex.switch_regex( FIXED_CODE_REGEX, row ) )
+                        composition_object.list_of_fixed_material_codes.append( regex.switch_regex( FIXED_MATERIAL_CODE_REGEX, row ) )
+                        composition_object.list_of_fixed_material_quantities.append( regex.switch_regex( FIXED_MATERIAL_QUANT_REGEX, row ) )
+                    elif regex.switch_regex( TRANSPORTATION_UNIT_REGEX, row ) != None:
+                        composition_object.list_of_transp_pv_codes.append( regex.switch_regex( TRANSPORTATION_PV_CODE_REGEX, row ) )
+                        composition_object.list_of_transp_rp_codes.append( regex.switch_regex( TRANSPORTATION_RP_CODE_REGEX, row ) )
+                        composition_object.list_of_transp_ln_codes.append( regex.switch_regex( TRANSPORTATION_LN_CODE_REGEX, row ) )
+                        composition_object.list_of_transp_material_codes.append( regex.switch_regex( TRANSPORTATION_MATERIAL_CODE_REGEX, row ) )
+                        composition_object.list_of_transp_material_quantities.append( regex.switch_regex( TRANSPORTATION_MATERIAL_QUANT_REGEX, row ) )
+                    elif regex.switch_regex( TRANSPORTATION_FE_CODE_REGEX_ALFA, row ) != None:
+                        composition_object.list_of_transp_fe_codes.append( regex.switch_regex( TRANSPORTATION_FE_CODE_REGEX_ALFA, row ) )
+                        composition_object.list_of_transp_material_codes.append( regex.switch_regex( TRANSPORTATION_MATERIAL_CODE_REGEX_ALFA, row ) )
+                        composition_object.list_of_transp_material_quantities.append( regex.switch_regex( TRANSPORTATION_MATERIAL_QUANT_REGEX_ALFA, row ) )    
+                    elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX, row ) != None:
+                        composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX, row ) )
+                        composition_object.list_of_general_input_quantities.append( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX, row ) )
+                    elif regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) != None:
+                        composition_object.list_of_general_input_quantities.append( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) )
+                    elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) != None:
+                        composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) )
+                    elif regex.switch_regex( BREAK_REGEX, row ) != None:
+                        i = i + 6 #jump costs of composition
+                    elif regex.switch_regex( LAST_REGEX, row ) != None:
+                        composition_object.stop_flag = True
+                    i = i + 1
 
-            print( composition_object.list_of_fixed_codes )
-            print( composition_object.list_of_fixed_material_codes )
-            print( composition_object.list_of_fixed_material_quantities )
+                    
+                composition_bulk_list.append(
+                    ModelComposition(
+                        composition_code=composition_object.composition_code,
+                        fic=composition_object.fic,
+                        production=composition_object.production,
+                        file_cost=self.selected_object
+                        )
+                    )
+            
+            ModelComposition.objects.bulk_create( composition_bulk_list )
 
-            print( composition_object.list_of_transp_pv_codes )
-            print( composition_object.list_of_transp_ln_codes )
-            print( composition_object.list_of_transp_rp_codes )
-            print( composition_object.list_of_transp_material_codes )
-            print( composition_object.list_of_transp_material_quantities )
+            # print( composition_object.list_of_equipement_codes )
+            # print( composition_object.list_of_equipement_quantities )
+            # print( composition_object.list_of_equipement_utilities )
+            # print( composition_object.list_of_general_input_codes)
+            # print( composition_object.list_of_general_input_quantities)
+
+            # print( composition_object.list_of_fixed_codes )
+            # print( composition_object.list_of_fixed_material_codes )
+            # print( composition_object.list_of_fixed_material_quantities )
+
+            # print( composition_object.list_of_transp_pv_codes )
+            # print( composition_object.list_of_transp_ln_codes )
+            # print( composition_object.list_of_transp_rp_codes )
+            # print( composition_object.list_of_transp_material_codes )
+            # print( composition_object.list_of_transp_material_quantities )
 
         elif case == SINTETICO:
             print('Sintético')
