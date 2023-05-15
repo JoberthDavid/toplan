@@ -138,7 +138,7 @@ class ModelInput(models.Model):
         verbose_name_plural="Apropriações de composições"
 
     def __str__(self):
-        return str(self.main_input_code)
+        return str(self.related_composition) + " - " + str(self.main_input_code)
 
 class CompositionStamp:
 

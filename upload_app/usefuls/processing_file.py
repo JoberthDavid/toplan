@@ -30,13 +30,14 @@ class FileProcessor:
             composition_bulk_create_list = []
             input_bulk_create_list = []
 
-            for page in range(98):#range( len( self.pdf_content.pages ) ):
+            pages = 1000#len( self.pdf_content.pages )
+
+            for page in range(pages):
                 composition_object = CompositionStamp()
                 list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
                 i = 1 #jump first row of composition
 
-                # print( page )
-                while i < len(list_of_inputs_of_composition):
+                while i < 5:
                     row = list_of_inputs_of_composition[i]
 
                     if regex.switch_regex( FIC_REGEX, row) != None:
@@ -49,27 +50,49 @@ class FileProcessor:
                     elif regex.switch_regex( COMPOSITION_CODE_REGEX, row) != None:
                         comp_code_int = int( regex.switch_regex( COMPOSITION_CODE_REGEX, row) )
                         composition_object.composition_code = comp_code_int
-                    elif regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
-                        composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) )
-                        quantity_dec = Decimal( regex.switch_regex( EQUIPEMENT_QUANT_REGEX, row ).replace(".","").replace(",",".") )
-                        composition_object.list_of_equipement_quantities.append( quantity_dec )
-                        use_dec = Decimal( regex.switch_regex( EQUIPEMENT_UTIL_REGEX, row ).replace(".","").replace(",",".") )
-                        composition_object.list_of_equipement_utilities.append( use_dec )
-                        print( row )
+                    i = i + 1
+
+                composition_bulk_create_list.append(
+                    ModelComposition(
+                        composition_code=composition_object.composition_code,
+                        fic=composition_object.fic,
+                        production=composition_object.production,
+                        file_cost=self.selected_object
+                    )
+                )
+
+            list_of_composition_objects = ModelComposition.objects.bulk_create( composition_bulk_create_list )                
+            
+            list_of_equipements = []
+            list_of_equipements_x = []
+            
+            for page in range(pages):
+                composition_object = CompositionStamp()
+                list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
+                i = 6 #jump first row of inputs
+
+
+                while i < len(list_of_inputs_of_composition):
+                    row = list_of_inputs_of_composition[i]
+
+                    if regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
+                        code = regex.switch_regex( EQUIPEMENT_CODE_REGEX, row )
                         ap_eq = ModelInput(
-                            main_input_code=regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ),
+                            main_input_code=code,
                             main_input_group=EQUIPAMENTO,
-                            main_input_quantity=quantity_dec,
-                            main_input_use=use_dec,
+                            main_input_quantity=Decimal( regex.switch_regex( EQUIPEMENT_QUANT_REGEX, row ).replace(".","").replace(",",".") ),
+                            main_input_use=Decimal( regex.switch_regex( EQUIPEMENT_UTIL_REGEX, row ).replace(".","").replace(",",".") ),
                             transported_input_code=None,
-                            related_composition=None,
+                            related_composition=list_of_composition_objects[page],
                         )
                         input_bulk_create_list.append(ap_eq)
+                        list_of_equipements.append( code )
                     elif regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) != None:
                         composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) )
                         composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ) )
                     elif regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) != None:
-                        composition_object.list_of_equipement_codes.append( regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) )
+                        codex = regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row )
+                        list_of_equipements_x.append( codex )
                     elif regex.switch_regex( FIXED_UNIT_REGEX, row ) != None:
                         composition_object.list_of_fixed_codes.append( regex.switch_regex( FIXED_CODE_REGEX, row ) )
                         composition_object.list_of_fixed_material_codes.append( regex.switch_regex( FIXED_MATERIAL_CODE_REGEX, row ) )
@@ -99,36 +122,13 @@ class FileProcessor:
 
                     i = i + 1
 
-                    
-                composition_bulk_create_list.append(
-                    ModelComposition(
-                        composition_code=composition_object.composition_code,
-                        fic=composition_object.fic,
-                        production=composition_object.production,
-                        file_cost=self.selected_object
-                    )
-                )
 
-
-            # ModelComposition.objects.bulk_create( composition_bulk_create_list )
             # print( input_bulk_create_list )
             a = ModelInput.objects.bulk_create( input_bulk_create_list )
-            print( a )
-            # print( composition_object.list_of_equipement_codes )
-            # print( composition_object.list_of_equipement_quantities )
-            # print( composition_object.list_of_equipement_utilities )
-            # print( composition_object.list_of_general_input_codes)
-            # print( composition_object.list_of_general_input_quantities)
+            # print( a )
+            print( len(list_of_equipements) )
+            print( len(list_of_equipements_x) )
 
-            # print( composition_object.list_of_fixed_codes )
-            # print( composition_object.list_of_fixed_material_codes )
-            # print( composition_object.list_of_fixed_material_quantities )
-
-            # print( composition_object.list_of_transp_pv_codes )
-            # print( composition_object.list_of_transp_ln_codes )
-            # print( composition_object.list_of_transp_rp_codes )
-            # print( composition_object.list_of_transp_material_codes )
-            # print( composition_object.list_of_transp_material_quantities )
 
         elif case == SINTETICO:
             print('Sintético')
