@@ -1,3 +1,5 @@
+from decimal import Decimal
+import datetime
 from django.db import models
 from django.core.validators import FileExtensionValidator
 
@@ -59,7 +61,7 @@ class ModelFileCost(models.Model):
         return str(self.format_data_base())
 
     def get_absolute_url(self):
-        return '/upload_app/%i/' % self.id
+        return '/upload_app/%i/' % self.pk
     
 
 class ModelComposition(models.Model):
@@ -71,7 +73,7 @@ class ModelComposition(models.Model):
         verbose_name="FIC",
         max_digits=18,
         decimal_places=5,
-        default=0.0,
+        default=Decimal(0.0),
         )
     production = models.DecimalField(
         verbose_name="Produção",
@@ -148,25 +150,18 @@ class ModelInput(models.Model):
 class CompositionStamp:
 
     def __init__( self ) -> None:
-        self.fic = 0.00000
-        self.data_base = None
-        self.production = None
-        self.unit = None
-        self.composition_code = None
+        self.fic = Decimal(0.0)
+        self.data_base = datetime.date(1900,1,1)
+        self.production = Decimal(0.0)
+        self.unit = ''
+        self.composition_code = ''
         self.list_of_equipement_codes = []
         self.list_of_equipement_quantities = []
         self.list_of_equipement_utilities = []
         self.list_of_general_input_codes = []
+        self.list_of_general_input_group = []
         self.list_of_general_input_quantities = []
-        self.list_of_fixed_codes = []
-        self.list_of_fixed_material_codes = []
-        self.list_of_fixed_material_quantities = []
-        self.list_of_transp_pv_codes = []
-        self.list_of_transp_ln_codes = []
-        self.list_of_transp_rp_codes = []
-        self.list_of_transp_fe_codes = []
-        self.list_of_transp_material_codes = []
-        self.list_of_transp_material_quantities = []
+        self.list_of_general_input_utilities = []
         
         self.stop_flag = False
 

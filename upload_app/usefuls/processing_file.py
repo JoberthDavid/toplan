@@ -48,8 +48,7 @@ class FileProcessor:
                         composition_object.unit = regex.switch_regex( UNIT_REGEX, row)
                         
                     elif regex.switch_regex( COMPOSITION_CODE_REGEX, row) != None:
-                        comp_code_int = int( regex.switch_regex( COMPOSITION_CODE_REGEX, row) )
-                        composition_object.composition_code = comp_code_int
+                        composition_object.composition_code = regex.switch_regex( COMPOSITION_CODE_REGEX, row)
                         
                     i = i + 1
 
@@ -90,11 +89,12 @@ class FileProcessor:
                         list_of_inputs.append( code )
 
                     elif regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) != None:
-                        composition_object.list_of_equipement_quantities.append( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) )
-                        composition_object.list_of_equipement_utilities.append( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ) )
+                        composition_object.list_of_equipement_quantities.append( Decimal( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
+                        composition_object.list_of_equipement_utilities.append( Decimal( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
                     elif regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) != None:
                         codex = regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row )
                         list_of_inputs_x.append( codex )
+                        composition_object.list_of_equipement_codes.append( codex )
                     elif regex.switch_regex( FIXED_UNIT_REGEX, row ) != None:
                         code = regex.switch_regex( FIXED_CODE_REGEX, row )
                         input_object = ModelInput(
@@ -181,9 +181,11 @@ class FileProcessor:
 
 
                     elif regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) != None:
-                        composition_object.list_of_general_input_quantities.append( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) )
+                        composition_object.list_of_general_input_quantities.append( Decimal( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
+                        composition_object.list_of_general_input_utilities.append( Decimal(0.0) )
                     elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) != None:
                         composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) )
+                        composition_object.list_of_general_input_group.append( MATERIAL )
                     elif regex.switch_regex( BREAK_REGEX, row ) != None:
                         i = i + 6 #dont parse lastest rows of inputs
                     elif regex.switch_regex( LAST_REGEX, row ) != None:
@@ -192,12 +194,8 @@ class FileProcessor:
 
                     i = i + 1
 
-            # print( list_of_composition_objects )
             print( input_bulk_create_list )
             a = ModelInput.objects.bulk_create( input_bulk_create_list )
-            # print( a )
-            # print( len(list_of_inputs) )
-            # print( len(list_of_inputs_x) )
 
 
         elif case == SINTETICO:
