@@ -18,7 +18,10 @@ class CompositionRegex:
         if case == FIC_REGEX:
             return self.get_regex( SECOND_ROW_PATTERN, evaluated, case )
         elif case == DATA_BASE_REGEX or case == PRODUCTION_REGEX or case == UNIT_REGEX:
-            return self.get_regex( THIRD_ROW_PATTERN, evaluated, case )
+            if self.get_regex( THIRD_ROW_PATTERN, evaluated, case ):
+                return self.get_regex( THIRD_ROW_PATTERN, evaluated, case )
+            elif self.get_regex( THIRD_ROW_PATTERN_BETA, evaluated, case ):
+                return self.get_regex( THIRD_ROW_PATTERN_BETA, evaluated, case )
         elif case == COMPOSITION_CODE_REGEX:
             return self.get_regex( FOURTH_ROW_PATTERN, evaluated, case )
         elif case == EQUIPEMENT_CODE_REGEX or case == EQUIPEMENT_QUANT_REGEX or case == EQUIPEMENT_UTIL_REGEX:

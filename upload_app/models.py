@@ -85,6 +85,11 @@ class ModelComposition(models.Model):
         null=True,
         blank=True,
         )
+    # main_composition_group = models.CharField(
+    #     verbose_name="Grupo",
+    #     max_length=2,
+    #     choices=COMPOSITION_GROUP,
+    #     )
 
     class Meta:
         verbose_name="Composição"

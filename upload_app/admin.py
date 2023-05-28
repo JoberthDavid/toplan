@@ -65,11 +65,15 @@ class ModelFileCostAdmin(admin.ModelAdmin):
 class ModelCompositionAdmin(admin.ModelAdmin):
 
     order_by = 'file_cost'
+    list_filter = ['file_cost',]
+    search_fields = ['composition_code']
 
 
 class ModelInputAdmin(admin.ModelAdmin):
 
     order_by = 'related_composition'
+    list_filter = ['related_composition__file_cost', 'main_input_code','main_input_group', 'related_composition']
+    search_fields = ['related_composition__composition_code']
 
 
 admin.site.register(ModelFileCost, ModelFileCostAdmin)

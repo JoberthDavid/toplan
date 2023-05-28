@@ -1,0 +1,74 @@
+SISTEMA DE CUSTOS REFERENCIAIS DE OBRAS - SICRO
+Custo Unitário de Referência
+Distrito Federal
+Abril/2021
+Produção da equipe 0,26513 un
+2607226 Assentamento dos materiais metálicos do AMV 1:10, TR 45, bitola larga
+A - EQUIPAMENTOS
+E9733
+Máquina tirefonadora e parafusadora - 6,70 kW
+B - MÃO DE OBRA
+P9859 Trabalhador de via
+Quantidade
+Valores em reais (R$)
+Utilização
+Custo Horário
+OperativaImprodutiva
+1,000001,000,00
+Quantidade
+16,00000Unidade
+hC - MATERIAL
+M2251 AMV tipo TR45, abertura 1:10, bitola largaQuantidade
+1,00000Unidade
+un
+D - ATIVIDADES AUXILIARESQuantidadeUnidade
+Produtivo
+Improdutivo
+Custo
+Horário Total
+23,7504
+7,1991
+Custo horário total de equipamentos23,7504
+23,7504
+Custo Horário
+16,3660
+Custo horário total de mão de obraCusto Horário Total
+261,8560
+261,8560
+Custo horário total de execução285,6064
+Custo unitário de execução
+Custo do FIC
+Custo do FIT1.077,2315
+-
+-
+Preço Unitário
+99.697,6680
+Custo unitário total de materialCusto Unitário
+99.697,6680
+99.697,6680
+Custo UnitárioCusto Unitário
+Custo total de atividades auxiliares
+E - TEMPO FIXO
+M2251
+AMV tipo TR45, abertura 1:10, bitola larga - Vagão plataforma 98 t
+F - MOMENTO DE TRANSPORTE
+M2251
+AMV tipo TR45, abertura 1:10, bitola larga - Vagão plataforma 98 t
+CódigoQuantidadeUnidade
+591468217,08512t
+QuantidadeUnidade17,08512tkmSubtotal100.774,8995
+Custo UnitárioCusto Unitário
+23,9100
+Custo unitário total de tempo fixo408,5052
+408,5052
+DMT
+LN
+RP
+P
+FE
+5914485
+Custo unitário total de transporte
+Custo unitário direto total
+Obs:
+Custo Unitário
+101.183,40

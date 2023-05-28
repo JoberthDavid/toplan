@@ -1,3 +1,14 @@
+Aparelho de apoio de neoprene fretado para estruturas moldadas no local - fornecimento e instalaçãoDistrito Federal SISTEMA DE CUSTOS REFERENCIAIS DE OBRAS - SICROCGCIT DNIT
+Janeiro/2021 2,00000 dm³
+0307731
+Quantidade A - EQUIPAMENTOS
+
+SISTEMADECUSTOSREFERENCIAISDEOBRAS-SICRO DistritoFederal
+CustoUnitáriodeReferência Janeiro/2023 Produçãodaequipe 2,00000un
+0308322 Aparelhodeapoiometálicoelastoméricomultidirecionalcomcapacidadede1.500kN-fornecimentoeinstalação Valoresemreais(R$)
+A-EQUIPAMENTOS QuantidadeUtilização CustoHorário Custo
+
+
 Pavimento de concreto com equipamento de pequeno porte - areia extraída e brita produzidaDistrito Federal SISTEMA DE CUSTOS REFERENCIAIS DE OBRAS - SICRO FIC 0,00746CGCIT DNIT
 Abril/2021 6,64000 m³
 4011507
