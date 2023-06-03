@@ -19,15 +19,17 @@ from django.urls import path
 from upload_app import views
 
 from rest_framework import routers
-from upload_app.api.viewsets import InputViewSet
+from upload_app.api.viewsets import FileCostViewSet, CompositionViewSet, InputViewSet
 
 
 router = routers.DefaultRouter()
-router.register(r'composicao', InputViewSet)
+router.register(r'publicacoes', FileCostViewSet)
+router.register(r'composicoes', CompositionViewSet)
+router.register(r'apropriacoes', InputViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home', views.home_page, name='home_page'),
+    path('', views.home_page, name='home_page'),
     path('upload_app/', views.upload_app, name='upload_app'),
-    path('', include(router.urls))
+    path('sicro/', include(router.urls))
 ]
