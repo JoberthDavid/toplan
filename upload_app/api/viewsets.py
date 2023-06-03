@@ -5,17 +5,23 @@ from upload_app.api.serializers import ModelFileCostSerializer, ModelComposition
 
 class FileCostViewSet(ModelViewSet):
 
-    queryset = ModelFileCost.objects.filter(status=True)
     serializer_class = ModelFileCostSerializer
+
+    def get_queryset(self):
+        return ModelFileCost.objects.filter(status=True)
 
 
 class CompositionViewSet(ModelViewSet):
 
-    queryset = ModelComposition.objects.all()
     serializer_class = ModelCompositionSerializer
+
+    def get_queryset(self):
+        return ModelComposition.objects.filter(production=2.0)
 
 
 class InputViewSet(ModelViewSet):
 
-    queryset = ModelInput.objects.all()
     serializer_class = ModelInputSerializer
+
+    def get_queryset(self):
+        return ModelInput.objects.filter(related_composition=83709)

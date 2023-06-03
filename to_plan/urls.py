@@ -23,9 +23,9 @@ from upload_app.api.viewsets import FileCostViewSet, CompositionViewSet, InputVi
 
 
 router = routers.DefaultRouter()
-router.register(r'publicacoes', FileCostViewSet)
-router.register(r'composicoes', CompositionViewSet)
-router.register(r'apropriacoes', InputViewSet)
+router.register(r'publicacoes', FileCostViewSet, basename='ModelFileCost')
+router.register(r'composicoes', CompositionViewSet, basename='ModelComposition')
+router.register(r'apropriacoes', InputViewSet, basename='ModelInput')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
