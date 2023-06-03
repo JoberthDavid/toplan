@@ -14,12 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf.urls import include
 from django.urls import path
 from upload_app import views
 
+from rest_framework import routers
+from upload_app.api.viewsets import InputViewSet
+
+
+router = routers.DefaultRouter()
+router.register(r'composicao', InputViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home_page, name='home_page'),
+    path('home', views.home_page, name='home_page'),
     path('upload_app/', views.upload_app, name='upload_app'),
+    path('', include(router.urls))
 ]
