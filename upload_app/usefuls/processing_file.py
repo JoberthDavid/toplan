@@ -28,7 +28,7 @@ class FileProcessor:
             composition_bulk_create_list = []
             input_bulk_create_list = []
 
-            pages = len( self.pdf_content.pages )
+            pages = 10# len( self.pdf_content.pages )
 
             for page in range(pages):
                 composition_object = CompositionStamp()
@@ -74,7 +74,7 @@ class FileProcessor:
 
                 while i < len(list_of_inputs_of_composition):
                     row = list_of_inputs_of_composition[i]
-                    print( row )
+                    # print( row )
                     if regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
                         code = regex.switch_regex( EQUIPEMENT_CODE_REGEX, row )
                         input_object = ModelInput(
@@ -182,7 +182,7 @@ class FileProcessor:
 
                     elif regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) != None:
                         composition_object.list_of_general_input_quantities.append( Decimal( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
-                        composition_object.list_of_general_input_utilities.append( Decimal(0.0) )
+                        composition_object.list_of_general_input_utilities.append( None )
                     elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) != None:
                         composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) )
                         composition_object.list_of_general_input_group.append( MATERIAL )
@@ -192,10 +192,11 @@ class FileProcessor:
                         composition_object.stop_flag = True
                     
 
-                    i = i + 1
 
-            print( input_bulk_create_list )
+            # print( input_bulk_create_list )
             a = ModelInput.objects.bulk_create( input_bulk_create_list )
+            
+
 
 
         elif case == SINTETICO:

@@ -12,6 +12,7 @@ from upload_app.usefuls.processing_file import FileProcessor
 
 
 class ModelFileCostAdmin(admin.ModelAdmin):
+
     list_display = [ str, 'status']
     order_by = 'data_base'
     date_hierarchy = 'data_base'
@@ -72,8 +73,8 @@ class ModelCompositionAdmin(admin.ModelAdmin):
 class ModelInputAdmin(admin.ModelAdmin):
 
     order_by = 'related_composition'
-    list_filter = ['related_composition__file_cost', 'main_input_code','main_input_group', 'related_composition']
-    search_fields = ['related_composition__composition_code']
+    list_filter = ['related_composition__file_cost','main_input_group',]
+    search_fields = ['related_composition__composition_code',]
 
 
 admin.site.register(ModelFileCost, ModelFileCostAdmin)

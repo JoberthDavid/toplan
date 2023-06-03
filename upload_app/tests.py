@@ -1,7 +1,11 @@
+from decimal import Decimal
+import datetime
 from operator import contains
 from django.test import TestCase
-from django.urls import resolve
+from django.urls import resolve, reverse
 from django.http import HttpRequest
+from django.contrib.auth.models import User
+from django.contrib.admin import *
 
 from upload_app.forms import FormFileCost
 from upload_app.views import home_page, upload_app
@@ -143,3 +147,28 @@ class ModelFileCostTest(TestCase):
         file = ModelFileCost.objects.get(id=1)
         field_label = file._meta.get_field('type_file').verbose_name
         self.assertEqual(field_label, 'Tipo de arquivo')
+
+
+class ModelFileCostAdminTests(TestCase):
+
+    def setUp(self):
+        """Must create some object to perform the action on"""
+        self.file_cost = ModelFileCost.objects.create(
+                                                    data_base=datetime.date(2021,4,1),
+                                                    file='DF 04-2021 Relatório Analítico de ComposiçΣes de Custos.pdf',
+                                                    )
+        """Must create auth user for views using api request factory"""
+        self.username = 'file_cost_tester'
+        self.password = '123'
+        self.user = User.objects.create_superuser(self.username, 'file_cost_tester@example.com', self.password)
+    
+    
+    def test_action_file_processor(self):
+        """Must """
+        data = {'action': 'process_file', '_selected_action': [self.file_cost.pk, ]}
+        print( ModelFileCost._meta.app_label )
+        print( ModelFileCost._meta.model_name )
+        # change_url = reverse('admin:%s_%s_process_file'%(ModelFileCost._meta.app_label, ModelFileCost._meta.model_name))
+        # response = self.client.post(change_url, data)
+        self.client.logout()
+        # self.assertEqual(response.status_code, 200)
