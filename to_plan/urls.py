@@ -31,5 +31,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_page, name='home_page'),
     path('upload_app/', views.upload_app, name='upload_app'),
-    path('sicro/', include(router.urls))
+    path('dados/', include(router.urls))
 ]

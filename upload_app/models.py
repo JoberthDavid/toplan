@@ -82,6 +82,7 @@ class ModelComposition(models.Model):
         )
     file_cost = models.ForeignKey(
         ModelFileCost,
+        verbose_name='Arquivo relacionado',
         on_delete=models.CASCADE,
         default=None,
         null=True,
@@ -134,6 +135,7 @@ class ModelInput(models.Model):
         )
     related_composition = models.ForeignKey(
         ModelComposition,
+        verbose_name='Composição relacionada',
         on_delete=models.CASCADE,
         default=None,
         null=True,
