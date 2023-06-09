@@ -6,6 +6,7 @@ from upload_app.usefuls.choices import ANALITICO, SINTETICO, EQUIPAMENTO, MAODEO
 from upload_app.usefuls.pattern import *
 from upload_app.usefuls.regex_pattern import CompositionRegex
 
+import timeit
 
 class FileProcessor:
         
@@ -28,16 +29,16 @@ class FileProcessor:
             composition_bulk_create_list = []
             input_bulk_create_list = []
 
-            pages = 10# len( self.pdf_content.pages )
+            pages = len( self.pdf_content.pages )
 
             for page in range(pages):
                 composition_object = CompositionStamp()
                 list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
-                i = 1 #dont parse first row of composition
+                i = 0
 
                 while i < 5:
                     row = list_of_inputs_of_composition[i]
-                    
+
                     if regex.switch_regex( FIC_REGEX, row) != None:
                         fic_str = regex.switch_regex( FIC_REGEX, row)
                         composition_object.fic = Decimal( fic_str.replace(".","").replace(",",".") )
@@ -49,7 +50,8 @@ class FileProcessor:
                         
                     elif regex.switch_regex( COMPOSITION_CODE_REGEX, row) != None:
                         composition_object.composition_code = regex.switch_regex( COMPOSITION_CODE_REGEX, row)
-                        
+                    
+
                     i = i + 1
 
                 composition_bulk_create_list.append(
@@ -61,7 +63,7 @@ class FileProcessor:
                     )
                 )
 
-            list_of_composition_objects = ModelComposition.objects.bulk_create( composition_bulk_create_list ) 
+            list_of_composition_objects = ModelComposition.objects.bulk_create( composition_bulk_create_list )
 
             list_of_inputs = []
             list_of_inputs_x = []
@@ -69,12 +71,11 @@ class FileProcessor:
             for page in range(pages):
                 composition_object = CompositionStamp()
                 list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
-                i = 6 #dont parse first row of inputs
-
+                i = 0
 
                 while i < len(list_of_inputs_of_composition):
                     row = list_of_inputs_of_composition[i]
-                    # print( row )
+
                     if regex.switch_regex( EQUIPEMENT_CODE_REGEX, row ) != None:
                         code = regex.switch_regex( EQUIPEMENT_CODE_REGEX, row )
                         input_object = ModelInput(
@@ -179,25 +180,25 @@ class FileProcessor:
                         input_bulk_create_list.append( input_object )
                         list_of_inputs.append( code )
 
-
                     elif regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) != None:
                         composition_object.list_of_general_input_quantities.append( Decimal( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
                         composition_object.list_of_general_input_utilities.append( None )
+
                     elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) != None:
                         composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) )
                         composition_object.list_of_general_input_group.append( MATERIAL )
+                    
                     elif regex.switch_regex( BREAK_REGEX, row ) != None:
                         i = i + 6 #dont parse lastest rows of inputs
+
                     elif regex.switch_regex( LAST_REGEX, row ) != None:
                         composition_object.stop_flag = True
                     
+                    i = i + 1
+                    
 
-
-            # print( input_bulk_create_list )
             a = ModelInput.objects.bulk_create( input_bulk_create_list )
             
-
-
 
         elif case == SINTETICO:
             print('Sintético')
@@ -210,4 +211,7 @@ class FileProcessor:
             print('Material')  
 
     def extract_text_from_pdf_file(self):
+        inicio = timeit.default_timer()
         self.switch_type_file( self.selected_object.type_file )
+        fim = timeit.default_timer()
+        print('duracao: %f' % (fim - inicio))

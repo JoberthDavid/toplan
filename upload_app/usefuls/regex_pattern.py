@@ -44,3 +44,5 @@ class CompositionRegex:
             return self.get_regex( BREAK_PATTERN, evaluated, case )
         elif case == LAST_REGEX:
             return self.get_regex( LAST_PATTERN, evaluated, case )
+        elif case == LAST_HEADER_REGEX:
+            return self.get_regex( LAST_HEADER_PATTERN, evaluated, case )
