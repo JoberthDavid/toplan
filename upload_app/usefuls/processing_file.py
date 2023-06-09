@@ -29,7 +29,7 @@ class FileProcessor:
             composition_bulk_create_list = []
             input_bulk_create_list = []
 
-            pages = len( self.pdf_content.pages )
+            pages = 100#len( self.pdf_content.pages )
 
             for page in range(pages):
                 composition_object = CompositionStamp()
