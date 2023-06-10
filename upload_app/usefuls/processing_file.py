@@ -29,7 +29,7 @@ class FileProcessor:
             composition_bulk_create_list = []
             input_bulk_create_list = []
 
-            pages = 100#len( self.pdf_content.pages )
+            pages = 400#len( self.pdf_content.pages )
 
             for page in range(pages):
                 composition_object = CompositionStamp()
@@ -214,4 +214,4 @@ class FileProcessor:
         inicio = timeit.default_timer()
         self.switch_type_file( self.selected_object.type_file )
         fim = timeit.default_timer()
-        print('duracao: %f' % (fim - inicio))
+        print ('duracao: %f' % (fim - inicio))

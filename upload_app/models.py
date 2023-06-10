@@ -66,8 +66,9 @@ class ModelFileCost(models.Model):
 
 class ModelComposition(models.Model):
 
-    composition_code = models.PositiveIntegerField(
+    composition_code = models.CharField(
         verbose_name="Código",
+        max_length=10,
         )
     fic = models.DecimalField(
         verbose_name="FIC",
@@ -88,11 +89,15 @@ class ModelComposition(models.Model):
         null=True,
         blank=True,
         )
-    # main_composition_group = models.CharField(
-    #     verbose_name="Grupo",
-    #     max_length=2,
-    #     choices=COMPOSITION_GROUP,
-    #     )
+    main_composition_group = models.CharField(
+        verbose_name="Grupo",
+        max_length=2,
+        choices=COMPOSITION_GROUP,
+        )
+    status = models.BooleanField(
+        verbose_name="Composição validada",
+        default=False,
+    )
 
     class Meta:
         verbose_name="Composição"
@@ -100,6 +105,7 @@ class ModelComposition(models.Model):
 
     def __str__(self):
         return str(self.composition_code)
+
 
 class ModelInput(models.Model):
 
@@ -143,11 +149,12 @@ class ModelInput(models.Model):
         )
 
     class Meta:
-        verbose_name="Apropriação de composição"
-        verbose_name_plural="Apropriações de composições"
+        verbose_name="Apropriação"
+        verbose_name_plural="Apropriações"
 
     def __str__(self):
         return str(self.related_composition) + " - " + str(self.main_input_code)
+
 
 class CompositionStamp:
 
