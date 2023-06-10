@@ -1,11 +1,20 @@
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
 from rest_framework.viewsets import ModelViewSet
 from upload_app.models import ModelFileCost, ModelComposition, ModelInput
 from upload_app.api.serializers import ModelFileCostSerializer, ModelCompositionSerializer, ModelInputSerializer
 
 
+class ReadOnly(BasePermission):
+
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
+    
+
 class FileCostViewSet(ModelViewSet):
 
     serializer_class = ModelFileCostSerializer
+    permission_classes = [ReadOnly]
 
     def get_queryset(self):
         methodology = self.request.query_params.get('metodologia')
@@ -27,6 +36,7 @@ class FileCostViewSet(ModelViewSet):
 class CompositionViewSet(ModelViewSet):
 
     serializer_class = ModelCompositionSerializer
+    permission_classes = [ReadOnly]
 
     def get_queryset(self):
         methodology = self.request.query_params.get('metodologia')
@@ -34,7 +44,7 @@ class CompositionViewSet(ModelViewSet):
         data_base = self.request.query_params.get('data_base')
         composition_code = self.request.query_params.get('composicao')
 
-        queryset = ModelComposition.objects.all()
+        queryset = ModelComposition.objects.filter(status=True)
 
         if methodology:
             queryset = ModelComposition.objects.filter(file_cost__methodology=methodology)
@@ -51,6 +61,7 @@ class CompositionViewSet(ModelViewSet):
 class InputViewSet(ModelViewSet):
 
     serializer_class = ModelInputSerializer
+    permission_classes = [ReadOnly]
 
     def get_queryset(self):
         methodology = self.request.query_params.get('metodologia')
@@ -59,7 +70,7 @@ class InputViewSet(ModelViewSet):
         composition_code = self.request.query_params.get('composicao')
         main_input_group = self.request.query_params.get('grupo')
 
-        queryset = ModelInput.objects.all()
+        queryset = ModelInput.objects.filter(related_composition__status=True)
 
         if methodology:
             queryset = ModelInput.objects.filter(related_composition__file_cost__methodology=methodology)
