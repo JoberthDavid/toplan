@@ -105,6 +105,10 @@ class ModelComposition(models.Model):
 
     def __str__(self):
         return str(self.composition_code)
+    
+    def update_group(self):
+        self.main_composition_group = self.__str__()[0:2]
+        self.save()
 
 
 class ModelInput(models.Model):
