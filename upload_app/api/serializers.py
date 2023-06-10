@@ -7,12 +7,14 @@ class ModelFileCostSerializer(ModelSerializer):
     class Meta:
         model = ModelFileCost
         fields = ['id', 'methodology', 'data_base', 'file', 'uf', 'type_system', 'type_file']
+        read_only_fields = ['id', 'methodology', 'data_base', 'file', 'uf', 'type_system', 'type_file']
 
 class ModelInputSerializer(ModelSerializer):
 
     class Meta:
         model = ModelInput
         fields = ['id', 'related_composition', 'main_input_code', 'main_input_group', 'main_input_quantity', 'main_input_use', 'transported_input_code']
+        read_only_fields = ['id', 'related_composition', 'main_input_code', 'main_input_group', 'main_input_quantity', 'main_input_use', 'transported_input_code']
 
 
 class ModelCompositionSerializer(ModelSerializer):
@@ -22,3 +24,4 @@ class ModelCompositionSerializer(ModelSerializer):
     class Meta:
         model = ModelComposition
         fields = ['id', 'composition_code', 'fic', 'production', 'file_cost', 'modelinput_set']
+        read_only_fields = ['id', 'composition_code', 'fic', 'production', 'file_cost', 'modelinput_set']
