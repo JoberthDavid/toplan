@@ -23,6 +23,12 @@ class FileProcessor:
         with self.selected_object.file.open(mode="rb") as openned_file:
             self.pdf_content = PdfReader(openned_file)
 
+    def get_dictionary_of_composition_pages(self) -> dict:
+        page_dict = {}
+        for page_selected in range(len( self.pdf_content.pages )):
+            page_dict[ page_selected ] = self.get_list_of_inputs_of_composition( page_selected )
+        return page_dict
+
     def get_list_of_inputs_of_composition(self, page_selected: int) -> list:
         return self.pdf_content.pages[ page_selected ].extract_text().split('\n')
 
@@ -37,13 +43,13 @@ class FileProcessor:
             minimo = None
             maximo = None
             inicio1 = timeit.default_timer()
-            page_dict = {}
+            page_dict = self.get_dictionary_of_composition_pages()
 
             for page in range(pages):
                 composition_object = CompositionStamp()
                 inicio = timeit.default_timer()
-                list_of_inputs_of_composition = self.get_list_of_inputs_of_composition( page )
-                page_dict[page] = list_of_inputs_of_composition
+                list_of_inputs_of_composition = page_dict[ page ]#self.get_list_of_inputs_of_composition( page )
+                # page_dict[page] = list_of_inputs_of_composition
                 fim = timeit.default_timer()
                 duracao = fim - inicio
                 if minimo == None:
@@ -96,7 +102,7 @@ class FileProcessor:
             inicio2 = timeit.default_timer()
             for page in range(pages):
                 composition_object = CompositionStamp()
-                list_of_inputs_of_composition = page_dict[page]#self.get_list_of_inputs_of_composition( page )
+                list_of_inputs_of_composition = page_dict[ page ]#self.get_list_of_inputs_of_composition( page )
                 i = 0
 
                 while i < len(list_of_inputs_of_composition):
