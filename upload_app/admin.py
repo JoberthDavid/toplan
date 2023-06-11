@@ -68,16 +68,6 @@ class ModelCompositionAdmin(admin.ModelAdmin):
     order_by = 'file_cost'
     list_filter = ['file_cost','main_composition_group',]
     search_fields = ['composition_code']
-    actions = ['group_composition',]
-
-    def select_object(self, queryset: QuerySet) -> ModelFileCost:
-        return queryset.filter(status=False)
-    
-    @admin.action(description='Agrupar composição')
-    def group_composition(self, request: HttpRequest, queryset: QuerySet) -> None:
-        selected_objects = self.select_object( queryset )
-        for item in selected_objects:
-            item.update_group()
 
 
 class ModelInputAdmin(admin.ModelAdmin):
