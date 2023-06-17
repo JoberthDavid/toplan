@@ -7,9 +7,12 @@ from django.http import HttpRequest
 from django.contrib.auth.models import User
 from django.contrib.admin import *
 
+from upload_app.admin import ModelFileCostAdmin
+
 from upload_app.forms import FormFileCost
 from upload_app.views import home_page, upload_app
 from upload_app.models import ModelFileCost
+from upload_app.usefuls.processing_file import FileProcessor
 
 
 class HomePageTest(TestCase):
@@ -162,13 +165,10 @@ class ModelFileCostAdminTests(TestCase):
         self.password = '123'
         self.user = User.objects.create_superuser(self.username, 'file_cost_tester@example.com', self.password)
     
-    
     def test_action_file_processor(self):
-        """Must """
-        data = {'action': 'process_file', '_selected_action': [self.file_cost.pk, ]}
-        print( ModelFileCost._meta.app_label )
-        print( ModelFileCost._meta.model_name )
-        # change_url = reverse('admin:%s_%s_process_file'%(ModelFileCost._meta.app_label, ModelFileCost._meta.model_name))
-        # response = self.client.post(change_url, data)
+        """Must do the action on the selected object"""
+        data = {'action': 'process_file', '_selected_action':[self.file_cost.pk,]}
+        change_url = reverse('admin:%s_%s_changelist' % (ModelFileCost._meta.app_label, ModelFileCost._meta.model_name) )
+        response = self.client.post(change_url, data, follow=True)
         self.client.logout()
-        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
