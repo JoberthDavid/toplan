@@ -170,11 +170,11 @@ class CompositionStamp:
         self.composition_code = ''
         self.list_of_equipement_codes = []
         self.list_of_equipement_quantities = []
-        self.list_of_equipement_utilities = []
+        self.list_of_equipement_uses = []
         self.list_of_general_input_codes = []
         self.list_of_general_input_group = []
         self.list_of_general_input_quantities = []
-        self.list_of_general_input_utilities = []
+        self.list_of_general_input_uses = []
         
         self.stop_flag = False
 

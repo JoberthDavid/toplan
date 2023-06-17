@@ -23,13 +23,13 @@ class FileProcessor:
         with self.selected_object.file.open(mode="rb") as openned_file:
             self.pdf_content = PdfReader(openned_file)
 
-    def get_dictionary_of_composition_pages(self) -> dict:
+    def get_dictionary_of_composition_pages(self, num_pages) -> dict:
         inicio0 = timeit.default_timer()
         page_dict = {}
         minimo = None
         maximo = None
 
-        for page_selected in range(len( self.pdf_content.pages )):
+        for page_selected in range( num_pages ):
             inicio = timeit.default_timer()
 
             page_dict[ page_selected ] = self.get_list_of_inputs_of_composition( page_selected )
@@ -54,10 +54,10 @@ class FileProcessor:
     def get_list_of_inputs_of_composition(self, page_selected: int) -> list:
         return self.pdf_content.pages[ page_selected ].extract_text().split('\n')
 
-    def extract_nominal_data_from_compositions(self, pages: int, regex: CompositionRegex, page_dict: dict) -> list:
+    def extract_nominal_data_from_compositions(self, num_pages: int, regex: CompositionRegex, page_dict: dict) -> list:
         composition_bulk_create_list = []
         inicio1 = timeit.default_timer()
-        for page in range(pages):
+        for page in range(num_pages):
             composition_object = CompositionStamp()
             list_of_inputs_of_composition = page_dict[ page ]
             i = 0
@@ -87,13 +87,11 @@ class FileProcessor:
         print ('* => segundo for ModelComposition : duracao de %f segundos' % (fim1 - inicio1))
         return ModelComposition.objects.bulk_create( composition_bulk_create_list )
 
-    def extract_inputs_from_compositions(self, pages: int, regex: CompositionRegex, page_dict: dict, list_of_composition_objects: list) -> None:
+    def extract_inputs_from_compositions(self, num_pages: int, regex: CompositionRegex, page_dict: dict, list_of_composition_objects: list) -> None:
         input_bulk_create_list = []
-        list_of_inputs = []
-        list_of_inputs_x = []
 
         inicio2 = timeit.default_timer()
-        for page in range(pages):
+        for page in range(num_pages):
             composition_object = CompositionStamp()
             list_of_inputs_of_composition = page_dict[ page ]
             i = 0
@@ -112,17 +110,22 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                 elif regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ) != None:
-                    composition_object.list_of_equipement_quantities.append( Decimal( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
-                    composition_object.list_of_equipement_utilities.append( Decimal( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
+                    quantity_eq = Decimal( regex.switch_regex( EQUIPEMENT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") )
+                    use_eq = Decimal( regex.switch_regex( EQUIPEMENT_UTIL_REGEX_ALFA, row ).replace(".","").replace(",",".") )
                 
                 elif regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row ) != None:
-                    codex = regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row )
-                    list_of_inputs_x.append( codex )
-
-                    composition_object.list_of_equipement_codes.append( codex )
+                    code_eq = regex.switch_regex( EQUIPEMENT_CODE_REGEX_BETA, row )
+                    input_object = ModelInput(
+                        main_input_code=code_eq,
+                        main_input_group=EQUIPAMENTO,
+                        main_input_quantity=quantity_eq,
+                        main_input_use=use_eq,
+                        transported_input_code=None,
+                        related_composition=list_of_composition_objects[page],
+                    )
+                    input_bulk_create_list.append( input_object )
 
                 elif regex.switch_regex( FIXED_UNIT_REGEX, row ) != None:
                     code = regex.switch_regex( FIXED_CODE_REGEX, row )
@@ -135,7 +138,6 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                 elif regex.switch_regex( TRANSPORTATION_UNIT_REGEX, row ) != None:
                     code = regex.switch_regex( TRANSPORTATION_PV_CODE_REGEX, row )
@@ -148,7 +150,6 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                     code = regex.switch_regex( TRANSPORTATION_RP_CODE_REGEX, row )
                     input_object = ModelInput(
@@ -160,7 +161,6 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                     code = regex.switch_regex( TRANSPORTATION_LN_CODE_REGEX, row )
                     input_object = ModelInput(
@@ -172,7 +172,6 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                 elif regex.switch_regex( TRANSPORTATION_FE_CODE_REGEX_ALFA, row ) != None:
                     code = regex.switch_regex( TRANSPORTATION_FE_CODE_REGEX_ALFA, row )
@@ -185,7 +184,6 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                 elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX, row ) != None:
                     code = regex.switch_regex( GENERAL_INPUT_CODE_REGEX, row )
@@ -206,14 +204,12 @@ class FileProcessor:
                         related_composition=list_of_composition_objects[page],
                     )
                     input_bulk_create_list.append( input_object )
-                    list_of_inputs.append( code )
 
                 elif regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ) != None:
-                    composition_object.list_of_general_input_quantities.append( Decimal( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") ) )
-                    composition_object.list_of_general_input_utilities.append( None )
+                    quantity = Decimal( regex.switch_regex( GENERAL_INPUT_QUANT_REGEX_ALFA, row ).replace(".","").replace(",",".") )
 
                 elif regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) != None:
-                    composition_object.list_of_general_input_codes.append( regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row ) )
+                    code = regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row )
 
                     if regex.switch_regex( GENERAL_INPUT_CODE_REGEX_BETA, row )[0] == 'P':
                         group = MAODEOBRA
@@ -221,15 +217,23 @@ class FileProcessor:
                         group = MATERIAL
                     else:
                         group = AUXILIAR
-
-                    composition_object.list_of_general_input_group.append( group )
                 
+                    input_object = ModelInput(
+                        main_input_code=code,
+                        main_input_group=group,
+                        main_input_quantity=quantity,
+                        main_input_use=None,
+                        transported_input_code=None,
+                        related_composition=list_of_composition_objects[page],
+                    )
+                    input_bulk_create_list.append( input_object )
+
                 elif regex.switch_regex( BREAK_REGEX, row ) != None:
                     i = i + 6 #dont parse lastest rows of inputs
 
                 elif regex.switch_regex( LAST_REGEX, row ) != None:
                     composition_object.stop_flag = True
-                
+
                 i = i + 1
                 
         a = ModelInput.objects.bulk_create( input_bulk_create_list )
@@ -238,13 +242,13 @@ class FileProcessor:
 
     def switch_type_file(self, case):
         if case == ANALITICO:
-            pages = len( self.pdf_content.pages )
+            num_pages = len( self.pdf_content.pages )
             regex = CompositionRegex()
-            page_dict = self.get_dictionary_of_composition_pages()
+            page_dict = self.get_dictionary_of_composition_pages( num_pages )
 
-            list_of_composition_objects = self.extract_nominal_data_from_compositions( pages, regex, page_dict )
+            list_of_composition_objects = self.extract_nominal_data_from_compositions( num_pages, regex, page_dict )
 
-            self.extract_inputs_from_compositions( pages, regex, page_dict, list_of_composition_objects )
+            self.extract_inputs_from_compositions( num_pages, regex, page_dict, list_of_composition_objects )
 
         elif case == SINTETICO:
             print('Sintético')
