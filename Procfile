@@ -1,2 +1,2 @@
 web: gunicorn to_plan.wsgi --log-file -
-web: gunicorn to_plan.wsgi --timeout 200
+web: gunicorn to_plan.wsgi --timeout 200000
