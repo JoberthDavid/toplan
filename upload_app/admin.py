@@ -11,6 +11,11 @@ from django.utils.translation import ngettext
 from upload_app.usefuls.processing_file import FileProcessor
 
 
+admin.site.site_header = "DNIT SR GO/DF"
+admin.site.index_title = "API custos"
+admin.site.site_title = "Administração"
+
+
 class ModelFileCostAdmin(admin.ModelAdmin):
 
     list_display = [ str, 'status']
