@@ -1,2 +1,2 @@
 web: gunicorn to_plan.wsgi --log-file -
-web: gunicorn to_plan.wsgi --timeout 55
+celery: celery worker -A to_plan -l info
