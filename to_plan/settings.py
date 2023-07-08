@@ -147,3 +147,14 @@ S3DIRECT_DESTINATIONS = {
         'key': 'pdf_uploaded/',
     },
 }
+
+# settings.py
+
+# Configuração do Celery
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+# Configurações do RabbitMQ
+# BROKER_URL = CELERY_BROKER_URL
+# CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE

@@ -8,7 +8,7 @@ from upload_app.models import ModelFileCost, ModelComposition, ModelInput
 from django.contrib import messages
 from django.utils.translation import ngettext
 
-from upload_app.usefuls.processing_file import FileProcessor
+from upload_app.tasks import process_file_in_background
 
 
 admin.site.site_header = "DNIT SR GO/DF"
@@ -25,23 +25,16 @@ class ModelFileCostAdmin(admin.ModelAdmin):
 
     def select_object(self, queryset: QuerySet) -> ModelFileCost:
         return queryset.filter(status=False).first()
-
-    def extract_text_from_pdf_file(self, selected_object: ModelFileCost) -> None:
-        FileProcessor( selected_object )
-
-    def update_selected_object(self, request: HttpRequest, selected_object: ModelFileCost) -> None:
-        selected_object.status=True
-        selected_object.save()
             
     def success_message_about_file_processing( self, request: HttpRequest, queryset: QuerySet) -> None:
         self.message_user( 
             request, 
             ngettext(
-                "O arquivo selecionado foi processado.",
-                "Apenas um arquivo foi processado de todos os selecionados.",
+                "O arquivo selecionado está em processamento.",
+                "Apenas um arquivo está em processamento de todos os selecionados.",
                 len(queryset),
                 ),
-                messages.SUCCESS )
+                messages.INFO )
 
     def warning_message_about_file_processing( self, request: HttpRequest, queryset: QuerySet) -> None:
         self.message_user( 
@@ -57,11 +50,9 @@ class ModelFileCostAdmin(admin.ModelAdmin):
     def process_file(self, request: HttpRequest, queryset: QuerySet) -> None:
         try:
             selected_object = self.select_object( queryset )
-        
-            self.extract_text_from_pdf_file( selected_object )
 
-            self.update_selected_object( request, selected_object )
-            
+            process_file_in_background.delay( selected_object.id )
+
             self.success_message_about_file_processing( request, queryset )
 
         except:

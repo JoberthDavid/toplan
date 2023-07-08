@@ -1,34 +1,20 @@
-from PyPDF2 import PdfReader
 from decimal import Decimal
-
-import timeit
 
 from upload_app.models import ModelFileCost, ModelComposition, ModelInput, CompositionStamp
 from upload_app.usefuls.choices import ANALITICO, SINTETICO, EQUIPAMENTO, MAODEOBRA, MATERIAL, AUXILIAR, TEMPO_FIXO, TRANSPORTE
 from upload_app.usefuls.pattern import *
 from upload_app.usefuls.regex_pattern import CompositionRegex
 
-import multiprocessing
-from functools import partial
-
 
 class FileProcessor:
-    def __init__(self, selected_object: ModelFileCost) -> None:
+    def __init__(self, selected_object: ModelFileCost, page_dict: dict, num_pages: int) -> None:
+        self.page_dict = page_dict
         self.selected_object = selected_object
-        start_time = timeit.default_timer()
-        self.access_file()
-        end_time = timeit.default_timer()
-        print('* => access_file : duracao de %f segundos' % (end_time - start_time))
-        self.extract_text_from_pdf_file()
+        self.switch_type_file( self.selected_object.type_file, num_pages )
 
-    def access_file(self) -> None:
-        with self.selected_object.file.open(mode="rb") as opened_file:
-            self.pdf_content = PdfReader(opened_file)
-
-    def extract_nominal_data_from_compositions(self, page_num: int, regex: CompositionRegex, page_content: list) -> list:
+    def extract_nominal_data_from_compositions(self, num_pages: int, regex: CompositionRegex, page_content: list) -> list:
         composition_bulk_create_list = []
-        start_time1 = timeit.default_timer()
-        for page in range(page_num):
+        for page in range(num_pages):
             composition_object = CompositionStamp()
             list_of_inputs_of_composition = page_content[page]
             i = 0
@@ -43,7 +29,7 @@ class FileProcessor:
                     composition_object.unit = regex.switch_regex(UNIT_REGEX, row)
                 elif regex.switch_regex(COMPOSITION_CODE_REGEX, row) != None:
                     composition_object.composition_code = regex.switch_regex(COMPOSITION_CODE_REGEX, row)
-                i = i + 1
+                i += 1
 
             composition_bulk_create_list.append(
                 ModelComposition(
@@ -54,52 +40,11 @@ class FileProcessor:
                     main_composition_group=composition_object.composition_code[0:2],
                 )
             )
-        end1 = timeit.default_timer()
-        print('* => segundo for ModelComposition : duracao de %f segundos' % (end1 - start_time1))
         return ModelComposition.objects.bulk_create(composition_bulk_create_list)
-
-    def extract_text_from_pdf_file(self) -> None:
-        num_pages = len(self.pdf_content.pages)
-        page_dict = self.get_dictionary_of_composition_pages(num_pages)
-        pool = multiprocessing.Pool()  # Create a pool of worker processes
-        func = partial(self.extract_nominal_data_from_compositions, num_pages, CompositionRegex(), page_dict)
-        results = pool.map(func, range(num_pages))
-        pool.close()
-        pool.join()
-
-    def get_dictionary_of_composition_pages(self, num_pages) -> dict:
-        start_time0 = timeit.default_timer()
-        page_dict = {}
-        minimo = None
-        maximo = None
-
-        for page_selected in range(num_pages):
-            start_time = timeit.default_timer()
-            page_dict[page_selected] = self.get_list_of_inputs_of_composition(page_selected)
-            end_time = timeit.default_timer()
-            duracao = end_time - start_time
-            if minimo == None:
-                minimo = duracao
-            elif minimo > duracao:
-                minimo = duracao
-
-            if maximo == None:
-                maximo = duracao
-            elif maximo < duracao:
-                maximo = duracao
-
-        end0 = timeit.default_timer()
-        print('* => get_dictionary_of_composition_pages : minima duracao de {} segundos; maxima duracao de {} segundos'.format(minimo, maximo))
-        print('* => primeiro for get_dictionary_of_composition_pages : duracao de %f segundos' % (end0 - start_time0))
-        return page_dict
-
-    def get_list_of_inputs_of_composition(self, page_selected: int) -> list:
-        return self.pdf_content.pages[page_selected].extract_text().split('\n')
 
     def extract_inputs_from_compositions(self, num_pages: int, regex: CompositionRegex, page_dict: dict, list_of_composition_objects: list) -> None:
         input_bulk_create_list = []
 
-        start_time2 = timeit.default_timer()
         for page in range(num_pages):
             composition_object = CompositionStamp()
             list_of_inputs_of_composition = page_dict[ page ]
@@ -238,39 +183,27 @@ class FileProcessor:
                     input_bulk_create_list.append( input_object )
 
                 elif regex.switch_regex( BREAK_REGEX, row ) != None:
-                    i = i + 6 #dont parse lastest rows of inputs
+                    i += 6 #dont parse lastest rows of inputs
 
                 elif regex.switch_regex( LAST_REGEX, row ) != None:
                     composition_object.stop_flag = True
 
-                i = i + 1
-                
-        a = ModelInput.objects.bulk_create( input_bulk_create_list )
-        end2 = timeit.default_timer()
-        print ('* => segundo for ModelInput : duracao de %f segundos' % (end2 - start_time2))
+                i += 1
+        result = ModelInput.objects.bulk_create( input_bulk_create_list )
 
-    def switch_type_file(self, case):
+    def switch_type_file(self, case, num_pages):
         if case == ANALITICO:
-            num_pages = len( self.pdf_content.pages )
             regex = CompositionRegex()
-            page_dict = self.get_dictionary_of_composition_pages( num_pages )
 
-            list_of_composition_objects = self.extract_nominal_data_from_compositions( num_pages, regex, page_dict )
+            list_of_composition_objects = self.extract_nominal_data_from_compositions( num_pages, regex, self.page_dict )
 
-            self.extract_inputs_from_compositions( num_pages, regex, page_dict, list_of_composition_objects )
+            self.extract_inputs_from_compositions( num_pages, regex, self.page_dict, list_of_composition_objects )
 
         elif case == SINTETICO:
             print('Sintético')
         elif case == EQUIPAMENTO:
-            for page in self.pdf_content.pages:
-                print(page.extract_text())
+            print('Equipamento') 
         elif case == MAODEOBRA:
             print('Mão de obra')   
         elif case == MATERIAL:
-            print('Material')  
-
-    def extract_text_from_pdf_file(self):
-        start_time = timeit.default_timer()
-        self.switch_type_file( self.selected_object.type_file )
-        end_time = timeit.default_timer()
-        print ('* => extract_text_from_pdf : duracao total de %f segundos' % (end_time - start_time))
+            print('Material')
