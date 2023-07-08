@@ -151,8 +151,8 @@ S3DIRECT_DESTINATIONS = {
 # settings.py
 
 # Configuração do Celery
-CELERY_BROKER_URL = "amqps://fyauifln:ul6aQMPug8bviHKGKRFfBz0mPgPNsNRg@woodpecker.rmq.cloudamqp.com/fyauifln"
-CELERY_RESULT_BACKEND = "amqps://fyauifln:ul6aQMPug8bviHKGKRFfBz0mPgPNsNRg@woodpecker.rmq.cloudamqp.com/fyauifln"
+CELERY_BROKER_URL = "amqp://fyauifln:ul6aQMPug8bviHKGKRFfBz0mPgPNsNRg@woodpecker.rmq.cloudamqp.com/fyauifln"
+CELERY_RESULT_BACKEND = "amqp://fyauifln:ul6aQMPug8bviHKGKRFfBz0mPgPNsNRg@woodpecker.rmq.cloudamqp.com/fyauifln"
 
 # Configurações do RabbitMQ
 BROKER_URL = CELERY_BROKER_URL
