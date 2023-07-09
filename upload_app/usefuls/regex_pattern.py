@@ -1,11 +1,9 @@
 import re
-from typing import Match
 
 from upload_app.usefuls.pattern import *
 
 
 class CompositionRegex:
-
 
     def get_regex( self, pattern: str, evaluated: str, group: str ) -> str|None:
         if ( re.match( pattern, evaluated ) is not None ):

@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
-from upload_app.models import ModelFileCost
 from .forms import FormFileCost
-from django.core.files.storage import FileSystemStorage
 
 
 def home_page(request):

@@ -1,5 +1,3 @@
-import PyPDF2
-
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest

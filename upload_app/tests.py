@@ -1,18 +1,11 @@
-from decimal import Decimal
 import datetime
-from operator import contains
 from django.test import TestCase
 from django.urls import resolve, reverse
-from django.http import HttpRequest
 from django.contrib.auth.models import User
 from django.contrib.admin import *
 
-from upload_app.admin import ModelFileCostAdmin
-
-from upload_app.forms import FormFileCost
 from upload_app.views import home_page, upload_app
 from upload_app.models import ModelFileCost
-from upload_app.usefuls.processing_file import FileProcessor
 
 
 class HomePageTest(TestCase):

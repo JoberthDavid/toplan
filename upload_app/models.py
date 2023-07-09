@@ -168,16 +168,16 @@ class CompositionStamp:
         self.production = Decimal(0.0)
         self.unit = ''
         self.composition_code = ''
-        self.list_of_equipement_codes = []
-        self.list_of_equipement_quantities = []
-        self.list_of_equipement_uses = []
-        self.list_of_general_input_codes = []
-        self.list_of_general_input_group = []
-        self.list_of_general_input_quantities = []
-        self.list_of_general_input_uses = []
+        # self.list_of_equipement_codes = []
+        # self.list_of_equipement_quantities = []
+        # self.list_of_equipement_uses = []
+        # self.list_of_general_input_codes = []
+        # self.list_of_general_input_group = []
+        # self.list_of_general_input_quantities = []
+        # self.list_of_general_input_uses = []
         
         self.stop_flag = False
 
 
-    def get_basic_data(self):
-        return str(self.composition_code) + str(self.fic) + str(self.data_base) + str(self.production) + str(self.unit)
+    # def get_basic_data(self):
+    #     return str(self.composition_code) + str(self.fic) + str(self.data_base) + str(self.production) + str(self.unit)
