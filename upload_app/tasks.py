@@ -7,6 +7,8 @@ from celery.utils.log import get_task_logger
 from PyPDF2 import PdfReader
 
 from io import BytesIO
+import boto3
+from to_plan.settings import AWS_STORAGE_BUCKET_NAME
 
 
 logger = get_task_logger(__name__)
@@ -31,10 +33,12 @@ def save_status_file( selected_object: ModelFileCost ) -> bool:
 def process_file_in_background( id: int ) -> bool:
 
     selected_object = ModelFileCost.objects.get(id=id)
-    
-    with selected_object.file.open(mode="rb") as opened_file:
-        bytes_stream = BytesIO(opened_file.read())
-        pdf_content = PdfReader(bytes_stream)
+    key_file = str(selected_object.file)
+
+    #streaming from AWS
+    s3 = boto3.client("s3")
+    obj = s3.get_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=key_file)
+    pdf_content = PdfReader(BytesIO(obj['Body'].read()))
 
     num_pages = len(pdf_content.pages)
     page_dict = {}
