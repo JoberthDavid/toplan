@@ -1,3 +1,4 @@
+import os
 from upload_app.usefuls.processing_file import FileProcessor
 from upload_app.models import ModelFileCost
 
@@ -10,6 +11,7 @@ from io import BytesIO
 import boto3
 from to_plan.settings import AWS_STORAGE_BUCKET_NAME
 
+import psutil
 
 logger = get_task_logger(__name__)
 
@@ -17,9 +19,8 @@ logger = get_task_logger(__name__)
 def get_list_of_inputs_of_composition( pdf_content, page_selected: int ) -> list:
     return pdf_content.pages[page_selected].extract_text().split('\n')
 
-def extract_text_from_pdf_file( selected_object: ModelFileCost, page_dict: dict, num_pages: int ) -> FileProcessor:
-    result = FileProcessor( selected_object=selected_object, page_dict=page_dict, num_pages=num_pages )
-    return result
+def extract_text_from_pdf_file( selected_object: ModelFileCost, page_dict: dict, num_pages: int ) -> None:
+    FileProcessor( selected_object=selected_object, page_dict=page_dict, num_pages=num_pages )
 
 def save_status_file( selected_object: ModelFileCost ) -> bool:
     try:
@@ -46,7 +47,12 @@ def process_file_in_background( id: int ) -> bool:
     for page_selected in range(num_pages):
         page_dict[page_selected] = get_list_of_inputs_of_composition( pdf_content, page_selected )
 
-    result = extract_text_from_pdf_file( selected_object=selected_object, page_dict=page_dict, num_pages=num_pages )
+    pid = os.getpid()
+    python_process = psutil.Process(pid)
+    memoryUse = python_process.memory_percent()
+    print('memory use: ', memoryUse)
+
+    extract_text_from_pdf_file( selected_object=selected_object, page_dict=page_dict, num_pages=num_pages )
 
     status_file = save_status_file( selected_object= selected_object )
 
